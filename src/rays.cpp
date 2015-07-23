@@ -9,6 +9,17 @@
 #define WIDTH 600
 #define HEIGHT 400
 
+typedef struct {
+  int r;
+  int g;
+  int b;
+} color;
+
+
+color paintPixel(int x, int y){
+  color pixel = {x, y, 256 -x};
+  return pixel;
+}
 
 void paint(SDL_Surface* screen){
   if (SDL_MUSTLOCK(screen)) SDL_LockSurface(screen);
@@ -16,7 +27,8 @@ void paint(SDL_Surface* screen){
     for (int j = 0; j < WIDTH; j++) {
       int alpha = 255;
       int index = i * WIDTH + j;
-      *((Uint32*)screen->pixels + index) = SDL_MapRGBA(screen->format, i, j, 256-i, 255);
+      color pix = paintPixel(i, j);
+      *((Uint32*)screen->pixels + index) = SDL_MapRGBA(screen->format, pix.r, pix.g, pix.b, alpha);
     }
   }
 
