@@ -47,6 +47,7 @@ Color paintPixel(int x, int y, Scene scene){
   vec3 lookat = {x-WIDTH/2, y - HEIGHT/2, 0};
   vec3 ray;
   vec3_sub(ray, lookat, scene.camera_location);
+  printf("\n\n");
   Color pixel = trace(scene.camera_location, ray, 0, scene); 
 
   printf("\nRender <%i,%i> - %f,%f,%f : %i,%i,%i", x, y, ray[0], ray[1], ray[2], pixel.r, pixel.g, pixel.b);
