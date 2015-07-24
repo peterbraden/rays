@@ -5,38 +5,53 @@ class Camera {
 	  vec3 lookat;
 	  float angle;
      
-	  Camera(up, location, lookat, angle)
-/*
-	  vec3 getRay(int x, int y){
+	  Camera(vec3 u, vec3 loc, vec3 la, float a): angle(a){
+      up = u;
+      location = loc;
+      lookat = la;
+    }
+
+    // NB. Proportional x and y
+	  Ray getRay(float x, float y){
 
       vec3 camx;
       vec3 camy;
       vec3 camz;
       vec3 ncamz;
+      vec3 xdir;
+      vec3 ydir;
+      vec3 dest;
 
-      vec3_norm(camz, lookat, location);
+      vec3_sub(camz, lookat, location);
+      vec3_print(location);
+      vec3_print(lookat);
+      vec3_print(camz);
+      if (vec3_len(camz) == 0){
+        printf("FATAL: BAD CAMERA VECTORS");
+      }
       vec3_norm(camz, camz);
       vec3_mul_cross(camx, up, camz);
       vec3_norm(camx, camx);
       vec3_sub(ncamz, (vec3) {0., 0., 0.}, camz);
       vec3_mul_cross(camy, up, ncamz);
-      vec_norm(camy, camy);
+      vec3_norm(camy, camy);
 
-	
-	this.tax = Math.tan(angle);
-	this.tay = Math.tan((height/width) * angle)
-		var xdir = plib.v3.scale(this.camx, (x - 0.5) * this.tax);
-		var ydir = plib.v3.scale(this.camy, (y - 0.5) * this.tay);
-		
-		var pt = plib.v3.add(this.camz, plib.v3.add(xdir, ydir));
-		
-		//postMessage("DBG2 " + this.location + " |  " +pt + " | " + plib.v3.sub(pt, this.location) );
-		return [this.location, pt]
-    
-    }
-	
+      float tax = tan(angle);
+      float tay = tan(HEIGHT/WIDTH * angle);
+
+      vec3_scale(xdir, camx, (x-0.5) * tax);
+      vec3_scale(ydir, camy, (y-0.5) * tay);
+
+      vec3_add(dest, xdir, ydir);
+      vec3_add(dest, camz, dest);
+
+      Ray r;
+      r.ro = location;
+      r.rd = dest;
+
+      printf("<%f, %f> --> <%f, %f, %f>", x, y, dest.x, dest.y, dest.z);
+      return r;
 	}
-  */
 };
 
 

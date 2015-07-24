@@ -1,5 +1,5 @@
-#define WIDTH 600
-#define HEIGHT 400
+#define WIDTH 10//600
+#define HEIGHT 10// 400
 
 #include <stdio.h>
 #include <vector>
@@ -14,7 +14,6 @@
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
 #endif
-#include "../lib/linmath.h"
 #include "types.cpp"
 #include "object.cpp"
 #include "camera.cpp"
@@ -39,8 +38,8 @@ std::vector<Intersection> intersect(vec3 ro, vec3 rd, Scene scene){
 }
 
 // trace ro->rd into scene.
-Color trace(vec3 ro, vec3 rd, int depth, Scene scene){
-  std::vector<Intersection> intersections = intersect(ro, rd, scene);
+Color trace(Ray r, int depth, Scene scene){
+  std::vector<Intersection> intersections = intersect(r.ro, r.rd, scene);
 
   if (intersections.empty()){
     // No Intersection.
@@ -51,11 +50,9 @@ Color trace(vec3 ro, vec3 rd, int depth, Scene scene){
 }
 
 Color renderPixel(int x, int y, Scene scene){
-  vec3 lookat = {x-WIDTH/2, y - HEIGHT/2, 0};
-  vec3 ray;
-  vec3_sub(ray, lookat, scene.camera_location);
-  //printf("\n\n");
-  Color pixel = trace(scene.camera_location, ray, 0, scene); 
+  Ray ray = scene.camera.getRay((float) x / (float) WIDTH, (float) y / (float) HEIGHT);
+
+  Color pixel = trace(ray, 0, scene); 
 
   //printf("\nRender <%i,%i> - %f,%f,%f : %i,%i,%i", x, y, ray[0], ray[1], ray[2], pixel.r, pixel.g, pixel.b);
   return pixel;

@@ -10,11 +10,9 @@ class Sphere: public SceneObject {
     float radius;
 
   public:
-    Sphere(float x, float y, float z, float r) : radius(r) {
+    Sphere(vec3 c, float r) : radius(r) {
       //printf("CREATE SPHERE %f", r);
-      center[0] = x;
-      center[1] = y;
-      center[2] = z;
+      center = c;
     }
 
     Intersection intersects(vec3 ro, vec3 rd);
