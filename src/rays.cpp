@@ -12,21 +12,21 @@
 #include <emscripten.h>
 #endif
 
-#define WIDTH 6
-#define HEIGHT 4
+#define WIDTH 10//6
+#define HEIGHT 10//4
 
 
 std::vector<Intersection> intersect(vec3 ro, vec3 rd, Scene scene){
   std::vector<Intersection> v;
 
   for(int i = scene.objects.size()-1; i>=0; --i) {
-    Intersection intersect = scene.objects[i]->intersects(ro, rd);
-    printf(" d: %i", intersect.distance);
+    printf("Iterate objects: %i of %zi \n", i, scene.objects.size());
+    Intersection intersect = scene.objects[i].intersects(ro, rd);
     if (intersect.distance > 0){
       v.push_back(intersect);
     }
   }
-  printf("Intersection %i", v.size());
+  printf("Intersection %zi", v.size());
 
   return v;
 }

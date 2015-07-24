@@ -1,7 +1,7 @@
 typedef struct {
   vec3 camera_location;
   int camera_distance;
-  std::vector<SceneObject*> objects;
+  std::vector<Sphere> objects;
 } Scene;
 
 
@@ -10,10 +10,10 @@ typedef struct {
 
 
 Scene initScene (){
-  Sphere a = Sphere((vec3) {0.,0.,-10.}, 2.);
-  std::vector<SceneObject*> demoObjs;
+  Sphere a = Sphere(0.,0.,-10., 2.);
+  std::vector<Sphere> demoObjs;
 
-  demoObjs.push_back(&a);
+  demoObjs.push_back(a);
 
   Scene demoScene = {
     {0.,0.,10.}, // camera_location

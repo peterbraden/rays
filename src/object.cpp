@@ -1,8 +1,7 @@
 class SceneObject {
   public:
-    virtual Intersection intersects(vec3 ro, vec3 rd){
-      return (Intersection) {-1, {0,0,0}};
-    };
+    virtual Intersection intersects(vec3 ro, vec3 rd) = 0;
+    virtual void printInfo() = 0;
 };
 
 class Sphere: public SceneObject {
@@ -11,20 +10,20 @@ class Sphere: public SceneObject {
     float radius;
 
   public:
-    Sphere(vec3 c, float r){
+    Sphere(float x, float y, float z, float r) : radius(r) {
       printf("CREATE SPHERE %f", r);
-      center[0] = c[0];
-      center[1] = c[1];
-      center[2] = c[2];
-      radius = r;
+      center[0] = x;
+      center[1] = y;
+      center[2] = z;
     }
 
     Intersection intersects(vec3 ro, vec3 rd);
+    void printInfo();
 
 };
 
 Intersection Sphere::intersects(vec3 ro, vec3 rd){
-  printf(">1>>> %f", radius);
+  printf("Called Sphere::intersects, radius:  %f", radius);
   vec3 rdn;
   vec3 dst;
 
@@ -35,7 +34,7 @@ Intersection Sphere::intersects(vec3 ro, vec3 rd){
   float d = b*b-c;
   float dist;
 
-  printf(">2>>> %f", radius); 
+  printf(">2 radius:  %f", radius); 
   if (d > 0){
     dist = -b - sqrt(d);
   } else {
@@ -46,4 +45,7 @@ Intersection Sphere::intersects(vec3 ro, vec3 rd){
   printf(">3>>> %f", radius); 
   return (Intersection) {dist, {0,0,0}};
   
+}
+void Sphere::printInfo(){
+  printf("Sphere, radius: %f center:<%f,%f,%f> ", radius, center[0], center[1], center[2]);
 }
