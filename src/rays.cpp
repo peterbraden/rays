@@ -1,5 +1,5 @@
-#define WIDTH 10//600
-#define HEIGHT 10// 400
+#define WIDTH 50//600
+#define HEIGHT 50// 400
 
 #include <stdio.h>
 #include <vector>

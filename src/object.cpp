@@ -22,12 +22,10 @@ class Sphere: public SceneObject {
 
 Intersection Sphere::intersects(vec3 ro, vec3 rd){
   //printf("Called Sphere::intersects, radius:  %f", radius);
-  vec3 rdn;
   vec3 dst;
 
-  vec3_norm(rdn, rd);
-  vec3_sub(dst, ro, center);
-  float b = vec3_mul_inner(dst, rdn); // dot product.
+  dst = vec3_sub(ro, center);
+  float b = vec3_mul_inner(dst, vec3_norm(rd)); // dot product.
   float c = vec3_mul_inner(dst, dst) - radius * radius;
   float d = b*b-c;
   float dist;

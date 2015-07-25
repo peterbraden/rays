@@ -24,22 +24,28 @@ typedef struct {
 
 // Why the hell isnt' there a standard library for this.
 
-void vec3_add(vec3 r, vec3 a, vec3 b){
+vec3 vec3_add(vec3 a, vec3 b){
+  vec3 r;
   r.x = a.x + b.x;
   r.y = a.y + b.y;
   r.z = a.z + b.z;
+  return r;
 } 
 
-void vec3_sub(vec3 r, vec3 a, vec3 b){
+vec3 vec3_sub(vec3 a, vec3 b){
+  vec3 r;
   r.x = a.x - b.x;
-  r.y = 999; //a.y - b.y;
+  r.y = a.y - b.y;
   r.z = a.z - b.z;
+  return r;
 } 
 
-void vec3_scale(vec3 r, vec3 v, float s) { 
+vec3 vec3_scale(vec3 v, float s) { 
+  vec3 r;
   r.x = v.x * s;
   r.y = v.y * s;
   r.z = v.z * s;
+  return r;
 }
 
 float vec3_mul_inner(vec3 a, vec3 b){
@@ -54,14 +60,16 @@ float vec3_len(vec3 const v){ \
   return sqrtf(vec3_mul_inner(v,v));
 }
 
-void vec3_norm(vec3 out, vec3 in){
-  vec3_scale(out, in, 1.0 / vec3_len(in));
+vec3 vec3_norm(vec3 in){
+  return vec3_scale(in, 1.0 / vec3_len(in));
 }
 
-void vec3_mul_cross(vec3 r, vec3 a, vec3  b){
+vec3 vec3_mul_cross(vec3 a, vec3  b){
+  vec3 r;
   r.x = a.y*b.z - a.z*b.y;
   r.y = a.z*b.x - a.x*b.z;
   r.z = a.x*b.y - a.y*b.x;
+  return r;
 }
 
 void vec3_print(vec3 a){
