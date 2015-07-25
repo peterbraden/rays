@@ -1,5 +1,5 @@
-#define WIDTH 50//600
-#define HEIGHT 50// 400
+#define WIDTH 60
+#define HEIGHT 40
 
 #include <stdio.h>
 #include <vector>
@@ -43,7 +43,7 @@ Color trace(Ray r, int depth, Scene scene){
 
   if (intersections.empty()){
     // No Intersection.
-    return (Color) {100,0,0};
+    return (Color) {0,0,0};
   }
 
   return (Color) {255, 255, 255};
@@ -63,8 +63,13 @@ void paint(RenderContext ctx, Scene scene){
   for (int i = 0; i < HEIGHT; i++) {
     for (int j = 0; j < WIDTH; j++) {
       paintPixel(i, j, renderPixel(i, j, scene),ctx);
+      if (i%2 == 0 && j == 0) {
+        printf("\nrender: %i/%i", i, HEIGHT);
+        updateScreen(ctx);
+      }
     }
   }
+  updateScreen(ctx);
 }
 
 extern "C" int main(int argc, char** argv) {

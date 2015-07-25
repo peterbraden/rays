@@ -22,8 +22,14 @@ void paintPixel(int x, int y, Color pix, RenderContext ctx){
   int index = x * WIDTH + y;
   *((Uint32*)ctx.screen->pixels + index) = SDL_MapRGBA(ctx.screen->format, pix.r, pix.g, pix.b, alpha);
   if (SDL_MUSTLOCK(ctx.screen)) SDL_UnlockSurface(ctx.screen);
-  if (index%300 == 0) {
-    updateScreen(ctx);
+}
+
+void initBackground(RenderContext ctx){
+  for (int i = 0; i < HEIGHT; i++) {
+    for (int j = 0; j < WIDTH; j++) {
+      int c = (j/2 + (i/2%2 == 0 ? 0 : 1)) % 2 == 0 ? 0 : 255;
+      paintPixel(i, j, (Color) {c, c, c} ,ctx);
+    }
   }
 }
 
@@ -44,5 +50,6 @@ RenderContext initScreen(){
   SDL_Surface *screen = SDL_GetWindowSurface(window);
   RenderContext ctx = {screen, window};
 #endif 
+  initBackground(ctx);
   return ctx;
 }

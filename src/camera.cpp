@@ -34,11 +34,13 @@ class Camera {
       tax = tan(angle);
       tay = tan((float) HEIGHT / (float) WIDTH * angle);
 
+      /*
       printf("\n CAMERA: ");
       vec3_print(camx);
       vec3_print(camy);
       vec3_print(camz);
       printf("\n");
+      */
     }
 
     // NB. Proportional x and y

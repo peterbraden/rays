@@ -5,7 +5,7 @@ typedef struct {
 
 
 Scene initScene (){
-  Sphere a = Sphere((vec3) {0.,0.,-10.}, 2.);
+  Sphere a = Sphere((vec3) {0.,0.,-10.}, 5.);
   std::vector<Sphere> demoObjs;
 
   demoObjs.push_back(a);
