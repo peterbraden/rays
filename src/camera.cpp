@@ -19,28 +19,14 @@ class Camera {
       location = loc;
       lookat = la;
 
-      camz = vec3_sub(lookat, location);
-      if (vec3_len(camz) == 0){
-        printf("FATAL: BAD CAMERA VECTORS");
-      }
-      camz = vec3_norm(camz);
-
-      camx = vec3_mul_cross(up, camz);
-      camx = vec3_norm(camx);
+      camz = vec3_norm(vec3_sub(lookat, location));
+      camx = vec3_norm(vec3_mul_cross(up, camz));
       
       camy = vec3_mul_cross(camx, vec3_sub((vec3) {0., 0., 0.}, camz));
       camy = vec3_norm(camy);
 
       tax = tan(angle);
-      tay = tan((float) HEIGHT / (float) WIDTH * angle);
-
-      /*
-      printf("\n CAMERA: ");
-      vec3_print(camx);
-      vec3_print(camy);
-      vec3_print(camz);
-      printf("\n");
-      */
+      tay = tan(((float) HEIGHT / (float) WIDTH) * angle);
     }
 
     // NB. Proportional x and y
@@ -58,8 +44,6 @@ class Camera {
       r.ro = location;
       r.rd = dest;
 
-      //printf("[%f, %f]", x,y);
-      //vec3_print(dest);
       return r;
 	}
 };

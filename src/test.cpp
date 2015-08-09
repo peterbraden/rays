@@ -18,7 +18,7 @@ void assertEqual(SceneObject* x, SceneObject* y, const char* m){
 
 void test(){
   
-  Sphere s = Sphere((vec3) {0.,0.,0}, 5.);
+  Sphere s = Sphere((vec3) {0.,0.,0}, 5., (Color) {100, 100, 100});
   Intersection i = s.intersects((vec3) {0,0,-10}, (vec3) {0,0,1});
 
   assertEqual(i.distance, 5., "Intersection distance");

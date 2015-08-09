@@ -1,5 +1,5 @@
-#define WIDTH 60
-#define HEIGHT 40
+#define WIDTH 200
+#define HEIGHT 100
 
 #include <stdio.h>
 #include <vector>
@@ -15,6 +15,7 @@
 #include <OpenGL/glext.h>
 #endif
 #include "types.cpp"
+#include "material.cpp"
 #include "object.cpp"
 #include "camera.cpp"
 #include "scene.cpp"
@@ -40,14 +41,20 @@ std::vector<Intersection> intersect(vec3 ro, vec3 rd, Scene scene){
 
 Intersection nearestIntersection(vec3 ro, vec3 rd, Scene scene){
   Intersection closest;
+  closest.distance = std::numeric_limits<float>::max();
+  int intersects = 0;
 
   for(int i = scene.objects.size()-1; i>=0; --i) {
     Intersection intersect = scene.objects[i].intersects(ro, rd);
-    if (intersect.distance < closest.distance || i == 0){
+    if (intersect.distance > 0 && intersect.distance < closest.distance){
       closest = intersect;
+      intersects = 1;
     }
   }
 
+  if (intersects == 0){
+    closest.distance = -1;
+  }
   return closest;
 }
 
@@ -61,15 +68,23 @@ Color trace(Ray r, int depth, Scene scene){
     return (Color) {0,0,0};
   }
 
-  Color base = closest.obj->color(closest.point);
+  Material material = closest.obj->material(closest.point);
   Color out;
 
-  // Ambient
-  out = color_scale(base, scene.ambient);
 
-  // Diffuse
+  // Ambient
+  out = color_scale(material.pigment, scene.ambient);
+
+  // Diffuse (Lambertian)
   // Specular
   // Reflection
+  if (depth < scene.maxDepth){ // TODO - only if reflection != 0
+    Ray refl;
+    refl.ro = closest.point;
+    refl.rd = vec3_sub(r.rd, vec3_scale(closest.normal, 2.0 * vec3_dot(closest.normal, r.rd)));
+    Color rc = trace(refl, depth + 1, scene);
+    out = color_add(color_scale(out, 1 - material.reflection), color_scale(rc, material.reflection)); 
+  }
   
 
   return out;
@@ -86,9 +101,9 @@ Color renderPixel(int x, int y, Scene scene){
 
 
 void paint(RenderContext ctx, Scene scene){
-  for (int i = 0; i < HEIGHT; i++) {
+  for (int i = HEIGHT - 1; i >= 0 ; i--) {
     for (int j = 0; j < WIDTH; j++) {
-      paintPixel(i, j, renderPixel(i, j, scene),ctx);
+      paintPixel(j, i, renderPixel(j, i, scene),ctx);
       if (i%2 == 0 && j == 0) {
         printf("\nrender: %i/%i", i, HEIGHT);
         updateScreen(ctx);

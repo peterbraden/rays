@@ -2,25 +2,26 @@ class SceneObject {
   public:
     virtual Intersection intersects(vec3 ro, vec3 rd) = 0;
     virtual void printInfo() = 0;
-    virtual Color color(vec3 pt) = 0;
+    virtual Material material(vec3 pt) = 0;
 };
 
 class Sphere: public SceneObject {
   private:
     vec3 center;
     float radius;
-    Color col;
+    Material _material;
 
   public:
-    Sphere(vec3 c, float r) : radius(r) {
+    Sphere(vec3 c, float r, Color col) : radius(r) {
       center = c;
-      col = (Color) {255, 0, 100};
+      _material.pigment = col;
+      _material.reflection = 0.5;
     }
 
     vec3 normal(vec3 pt);
     Intersection intersects(vec3 ro, vec3 rd);
     void printInfo();
-    Color color(vec3 pt);
+    Material material(vec3 pt);
 
 };
 
@@ -28,8 +29,8 @@ vec3 Sphere::normal(vec3 pt){
   return vec3_norm(vec3_sub(pt, center));
 }
 
-Color Sphere::color(vec3 pt){
-  return col;
+Material Sphere::material(vec3 pt){
+  return _material;
 }
 
 Intersection Sphere::intersects(vec3 ro, vec3 rd){

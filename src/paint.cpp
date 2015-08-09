@@ -19,7 +19,9 @@ void updateScreen(RenderContext ctx){
 void paintPixel(int x, int y, Color pix, RenderContext ctx){
   if (SDL_MUSTLOCK(ctx.screen)) SDL_LockSurface(ctx.screen);
   int alpha = 255;
-  int index = x * WIDTH + y;
+  int sy = HEIGHT - 1 - y;
+  int offs = ctx.screen->pitch / sizeof(Uint32);
+  int index = sy * offs + x;
   *((Uint32*)ctx.screen->pixels + index) = SDL_MapRGBA(ctx.screen->format, pix.r, pix.g, pix.b, alpha);
   if (SDL_MUSTLOCK(ctx.screen)) SDL_UnlockSurface(ctx.screen);
 }
