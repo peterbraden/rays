@@ -15,11 +15,20 @@ typedef struct {
   vec3 rd;
 } Ray;
 
+class SceneObject;
+class Sphere;
+
 typedef struct {
   int distance;
   vec3 point;
+  vec3 normal;
+  Sphere* obj; // Should be SceneObject
 } Intersection;
 
+
+Color color_scale(Color a, float b){
+  return (Color) {a.r * b, a.g*b, a.b * b};
+}
 
 
 // Why the hell isnt' there a standard library for this.

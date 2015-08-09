@@ -1,6 +1,7 @@
 typedef struct {
   Camera camera;
   std::vector<Sphere> objects;
+  float ambient; // Ambient light: 0 - 1;
 } Scene;
 
 
@@ -14,7 +15,8 @@ Scene initScene (){
 
   Scene demoScene = {
     defaultCamera,
-    demoObjs
+    demoObjs,
+    0.5 // Ambient
   };
   return demoScene;
 }
