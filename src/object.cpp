@@ -16,6 +16,7 @@ class Sphere: public SceneObject {
       center = c;
       _material.pigment = col;
       _material.reflection = 0.5;
+      _material.phong = 40;
     }
 
     vec3 normal(vec3 pt);
@@ -58,3 +59,10 @@ Intersection Sphere::intersects(vec3 ro, vec3 rd){
 void Sphere::printInfo(){
   printf("Sphere, radius: %f center:<%f,%f,%f> ", radius, center.x, center.y, center.z);
 }
+
+
+typedef struct {
+  vec3 location;
+  float intensity;
+} PointLight;
+

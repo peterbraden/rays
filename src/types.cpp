@@ -30,8 +30,15 @@ Color color_scale(Color a, float b){
   return (Color) {a.r * b, a.g*b, a.b * b};
 }
 
+Color color_scale(Color a, vec3 b){
+  return (Color) {a.r * b.x, a.g*b.y, a.b * b.z};
+}
+
 Color color_add(Color a, Color b){
   return (Color) {a.r + b.r, a.g + b.g, a.b + b.b};
+}
+Color color_add(Color a, vec3 b){
+  return (Color) {a.r + b.x, a.g + b.y, a.b + b.z};
 }
 
 // Why the hell isnt' there a standard library for this.

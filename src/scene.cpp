@@ -1,6 +1,7 @@
 typedef struct {
   Camera camera;
-  std::vector<Sphere> objects;
+  std::vector<Sphere> objects; // Should be SceneObject
+  std::vector<PointLight> lights; // Should be generic light
   float ambient; // Ambient light: 0 - 1;
   int maxDepth;
 } Scene;
@@ -16,13 +17,17 @@ Scene initScene (){
   demoObjs.push_back(a);
   demoObjs.push_back(b);
   demoObjs.push_back(c);
+  
+  std::vector<PointLight> demoLights;
+  demoLights.push_back( (PointLight) { (vec3) {0, 10, 10}, 0.7 } );
 
   Camera defaultCamera = Camera((vec3) {0.,1.,0}, (vec3) {0.,0.,20}, (vec3) {0.,0.,0.}, 0.78); // ~ pi/4
 
   Scene demoScene = {
     defaultCamera,
     demoObjs,
-    0.5, // Ambient
+    demoLights,
+    0.1, // Ambient
     1 // maxDepth
   };
   return demoScene;

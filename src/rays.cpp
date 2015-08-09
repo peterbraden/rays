@@ -1,5 +1,5 @@
 #define WIDTH 200
-#define HEIGHT 100
+#define HEIGHT 200
 
 #include <stdio.h>
 #include <vector>
@@ -39,14 +39,17 @@ std::vector<Intersection> intersect(vec3 ro, vec3 rd, Scene scene){
   return v;
 }
 
-Intersection nearestIntersection(vec3 ro, vec3 rd, Scene scene){
+Intersection nearestIntersection(vec3 ro, vec3 rd, float max, float min, Scene scene){
   Intersection closest;
   closest.distance = std::numeric_limits<float>::max();
   int intersects = 0;
 
   for(int i = scene.objects.size()-1; i>=0; --i) {
     Intersection intersect = scene.objects[i].intersects(ro, rd);
-    if (intersect.distance > 0 && intersect.distance < closest.distance){
+    if (intersect.distance > 0 && 
+        intersect.distance < closest.distance &&
+        intersect.distance < max &&
+        intersect.distance > min){
       closest = intersect;
       intersects = 1;
     }
@@ -60,8 +63,9 @@ Intersection nearestIntersection(vec3 ro, vec3 rd, Scene scene){
 
 // trace ro->rd into scene.
 Color trace(Ray r, int depth, Scene scene){
+  float max = std::numeric_limits<float>::max();
 
-  Intersection closest = nearestIntersection(r.ro, r.rd, scene);
+  Intersection closest = nearestIntersection(r.ro, r.rd, max, 0, scene);
 
   if (closest.distance < 0) {
     // No Intersection.
@@ -74,9 +78,35 @@ Color trace(Ray r, int depth, Scene scene){
 
   // Ambient
   out = color_scale(material.pigment, scene.ambient);
+  vec3 speculars = (vec3) {0,0,0};
 
-  // Diffuse (Lambertian)
-  // Specular
+  for(int i = scene.lights.size()-1; i>=0; --i) {
+    vec3 lightVec = vec3_sub(scene.lights[i].location, closest.point);
+    Intersection shadow = nearestIntersection(closest.point, lightVec, vec3_len(lightVec), 0.05, scene);
+    // if there's an intersection (dist > 0) then the point is shadowed.
+    if (shadow.distance < 0){
+
+      // Diffuse (Lambertian)
+      float diffuse_scale = vec3_dot(vec3_norm(lightVec), closest.normal) * scene.lights[i].intensity;
+      if (diffuse_scale > 0) {
+        Color diffuse = color_scale(material.pigment, diffuse_scale);
+        out = color_add(out, diffuse);
+      }
+
+      // Specular
+      vec3 ln = vec3_norm(lightVec);
+      vec3 refl = vec3_sub(ln, vec3_scale(closest.normal, 2.0 * vec3_dot(closest.normal, ln)));
+      float dp = vec3_dot(refl, vec3_norm(r.rd));
+      if (dp > 0){
+        float spec_scale = pow(dp, material.phong);
+        speculars = vec3_add(speculars, vec3_scale( (vec3) {1.,1.,1.}, std::min(spec_scale * 255., 255.)));// TODO Color 
+      }
+    
+    }
+  }
+  vec3_print(speculars);
+  out = color_add(out, speculars);
+
   // Reflection
   if (depth < scene.maxDepth){ // TODO - only if reflection != 0
     Ray refl;
@@ -118,7 +148,7 @@ extern "C" int main(int argc, char** argv) {
   paint(initScreen(), initScene());
 
 #ifndef __EMSCRIPTEN__
-  SDL_Delay(200);
+  SDL_Delay(2000);
 #endif
   SDL_Quit();
   return 0;
