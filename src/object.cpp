@@ -26,6 +26,30 @@ class Sphere: public SceneObject {
 
 };
 
+class Plane: public SceneObject {
+  private:
+    float y;
+  public:
+    Plane(float height) : y(height) {}
+    Intersection intersects(vec3 ro, vec3 rd);
+    //Material material(vec3 pt);
+};
+
+
+Intersection Plane::intersects(vec3 ro, vec3 rd){
+  vec3 rdn = vec3_norm(rd);
+  vec3 norm = (vec3) {0,1,0};
+  float dist = vec3_dot( norm, vec3_sub( (vec3) {0,y,0}, ro));
+  dist = dist / vec3_dot(norm, rdn);
+  vec3 pt = vec3_add(ro, vec3_scale(vec3_norm(rd), dist));
+
+  return (Intersection) {dist, pt, norm, this};
+
+}
+
+
+
+
 vec3 Sphere::normal(vec3 pt){
   return vec3_norm(vec3_sub(pt, center));
 }

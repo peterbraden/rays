@@ -22,7 +22,7 @@ typedef struct {
   float distance;
   vec3 point;
   vec3 normal;
-  Sphere* obj; // Should be SceneObject
+  SceneObject* obj;
 } Intersection;
 
 

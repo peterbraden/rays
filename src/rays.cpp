@@ -29,7 +29,7 @@ std::vector<Intersection> intersect(vec3 ro, vec3 rd, Scene scene){
 
   for(int i = scene.objects.size()-1; i>=0; --i) {
     //printf("Iterate objects: %i of %zi \n", i, scene.objects.size());
-    Intersection intersect = scene.objects[i].intersects(ro, rd);
+    Intersection intersect = scene.objects[i]->intersects(ro, rd);
     if (intersect.distance > 0){
       v.push_back(intersect);
     }
@@ -45,7 +45,7 @@ Intersection nearestIntersection(vec3 ro, vec3 rd, float max, float min, Scene s
   int intersects = 0;
 
   for(int i = scene.objects.size()-1; i>=0; --i) {
-    Intersection intersect = scene.objects[i].intersects(ro, rd);
+    Intersection intersect = scene.objects[i]->intersects(ro, rd);
     if (intersect.distance > 0 && 
         intersect.distance < closest.distance &&
         intersect.distance < max &&
