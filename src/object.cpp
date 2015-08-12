@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 class SceneObject {
   public:
     virtual Intersection intersects(vec3 ro, vec3 rd) = 0;
@@ -32,7 +34,8 @@ class Plane: public SceneObject {
   public:
     Plane(float height) : y(height) {}
     Intersection intersects(vec3 ro, vec3 rd);
-    //Material material(vec3 pt);
+    Material material(vec3 pt);
+    void printInfo();
 };
 
 
@@ -44,7 +47,26 @@ Intersection Plane::intersects(vec3 ro, vec3 rd){
   vec3 pt = vec3_add(ro, vec3_scale(vec3_norm(rd), dist));
 
   return (Intersection) {dist, pt, norm, this};
+}
 
+
+Material Plane::material(vec3 pt){
+  Material m;
+	int zig = pt.x > 0 ? abs( (int) pt.x)/50 % 2 ? 1 : 0 : abs( (int) pt.x)/50 % 2 ? 0 : 1;
+  int zag = pt.z > 0 ? abs( (int) pt.z)/50 % 2 ? 1 : 0 : abs( (int) pt.z)/50 % 2 ? 0 : 1;
+		
+  
+
+	if(!zig != !zag) { // zig XOR zag
+    m.pigment = (Color){255,255,255};
+  } else {
+    m.pigment = (Color){0,0,0};
+  }
+  return m;
+}
+
+void Plane::printInfo(){
+  printf("plane");
 }
 
 

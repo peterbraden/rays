@@ -104,7 +104,6 @@ Color trace(Ray r, int depth, Scene scene){
     
     }
   }
-  vec3_print(speculars);
   out = color_add(out, speculars);
 
   // Reflection

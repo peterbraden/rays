@@ -12,11 +12,15 @@ Scene initScene (){
   Sphere *b = new Sphere((vec3) {-4.,0.,0.}, 2., (Color) {0, 0, 255});
   Sphere *c = new Sphere((vec3) {0.,4.,0.}, 2., (Color) {255, 0, 0});
 
+  Plane * surface = new Plane(-3.);
+
   std::vector<SceneObject*> demoObjs;
 
   demoObjs.push_back(a);
   demoObjs.push_back(b);
   demoObjs.push_back(c);
+  demoObjs.push_back(surface);
+  
   
   std::vector<PointLight> demoLights;
   demoLights.push_back( (PointLight) { (vec3) {0, 10, 10}, 0.7 } );
