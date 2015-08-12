@@ -1,5 +1,5 @@
-#define WIDTH 200
-#define HEIGHT 200
+#define WIDTH 600
+#define HEIGHT 400
 
 #include <stdio.h>
 #include <vector>
@@ -129,17 +129,58 @@ Color renderPixel(int x, int y, Scene scene){
 }
 
 
-void paint(RenderContext ctx, Scene scene){
-  for (int i = HEIGHT - 1; i >= 0 ; i--) {
-    for (int j = 0; j < WIDTH; j++) {
-      paintPixel(j, i, renderPixel(j, i, scene),ctx);
-      if (i%2 == 0 && j == 0) {
-        printf("\nrender: %i/%i", i, HEIGHT);
-        updateScreen(ctx);
-      }
+Color renderAntiAliasedPixel(int x, int y, Scene scene){
+  float x1 = (float) x / (float) WIDTH;
+  float x2 = ((float) x + 0.5)  / (float) WIDTH;
+  float y1 = (float) y / (float) HEIGHT;
+  float y2 = ((float) y + 0.5)  / (float) HEIGHT;
+  Ray ray1 = scene.camera.getRay(x1, y1);
+  Ray ray2 = scene.camera.getRay(x1, y2);
+  Ray ray3 = scene.camera.getRay(x2, y1);
+  Ray ray4 = scene.camera.getRay(x2, y2);
+
+  Color avg = trace(ray1, 0, scene);
+  avg = color_add(avg, trace(ray2, 0, scene));
+  avg = color_add(avg, trace(ray3, 0, scene));
+  avg = color_add(avg, trace(ray4, 0, scene));
+
+  avg = color_scale(avg, 0.25);
+
+  return avg;
+}
+
+
+typedef struct {
+  int i;
+  RenderContext ctx;
+  Scene scene;
+} LineArgs;
+
+void renderLine(void* vargs) {
+  LineArgs* args = (LineArgs*) vargs;
+  int i = args->i;
+  RenderContext ctx = args->ctx;
+  Scene scene = args->scene;
+  for (int j = 0; j < WIDTH; j++) {
+    paintPixel(j, i, renderAntiAliasedPixel(j, i, scene),ctx);
+    if (i%2 == 0 && j == 0) {
+      printf("\nrender: %i/%i", i, HEIGHT);
+      updateScreen(ctx);
     }
   }
   updateScreen(ctx);
+}
+
+
+void paint(RenderContext ctx, Scene scene){
+  for (int i = HEIGHT - 1; i >= 0 ; i--) {
+    LineArgs args = (LineArgs) {i, ctx, scene};
+//#ifdef __EMSCRIPTEN__
+//    emscripten_async_call(renderLine, &args, 1);
+//#else
+    renderLine(&args);
+//#endif
+  }
 }
 
 extern "C" int main(int argc, char** argv) {
@@ -147,7 +188,7 @@ extern "C" int main(int argc, char** argv) {
   paint(initScreen(), initScene());
 
 #ifndef __EMSCRIPTEN__
-  SDL_Delay(2000);
+  SDL_Delay(5000);
 #endif
   SDL_Quit();
   return 0;

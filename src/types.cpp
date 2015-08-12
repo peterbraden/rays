@@ -41,6 +41,10 @@ Color color_add(Color a, vec3 b){
   return (Color) {a.r + b.x, a.g + b.y, a.b + b.z};
 }
 
+Color vec3_to_color(vec3 a){
+  return (Color) {(int) a.x, (int) a.y, (int) a.z};
+}
+
 // Why the hell isnt' there a standard library for this.
 
 vec3 vec3_add(vec3 a, vec3 b){
