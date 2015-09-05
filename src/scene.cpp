@@ -25,14 +25,14 @@ Scene initScene (){
   std::vector<PointLight> demoLights;
   demoLights.push_back( (PointLight) { (vec3) {0, 10, 10}, 0.7 } );
 
-  Camera defaultCamera = Camera((vec3) {0.,1.,0}, (vec3) {0.,0.,20}, (vec3) {0.,0.,0.}, 0.78); // ~ pi/4
+  Camera defaultCamera = Camera((vec3) {0.,1.,0}, (vec3) {20,5.,20}, (vec3) {0.,0.,0.}, 0.78); // ~ pi/4
 
   Scene demoScene = {
     defaultCamera,
     demoObjs,
     demoLights,
     0.1, // Ambient
-    1 // maxDepth
+    2 // maxDepth
   };
   return demoScene;
 }

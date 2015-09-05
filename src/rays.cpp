@@ -61,9 +61,12 @@ Intersection nearestIntersection(vec3 ro, vec3 rd, float max, float min, Scene s
   return closest;
 }
 
+unsigned int totalRaysTraced = 0;
+float max = std::numeric_limits<float>::max();
+
 // trace ro->rd into scene.
 Color trace(Ray r, int depth, Scene scene){
-  float max = std::numeric_limits<float>::max();
+  totalRaysTraced ++;
 
   Intersection closest = nearestIntersection(r.ro, r.rd, max, 0, scene);
 
@@ -130,6 +133,7 @@ Color renderPixel(int x, int y, Scene scene){
 
 
 Color renderAntiAliasedPixel(int x, int y, Scene scene){
+  // TODO - adaptive subsampling
   float x1 = (float) x / (float) WIDTH;
   float x2 = ((float) x + 0.5)  / (float) WIDTH;
   float y1 = (float) y / (float) HEIGHT;
@@ -186,6 +190,7 @@ void paint(RenderContext ctx, Scene scene){
 extern "C" int main(int argc, char** argv) {
   test();
   paint(initScreen(), initScene());
+  printf("\nTotal Rays: %i\n", totalRaysTraced);
 
 #ifndef __EMSCRIPTEN__
   SDL_Delay(5000);
