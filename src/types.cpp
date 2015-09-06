@@ -27,18 +27,18 @@ typedef struct {
 
 
 Color color_scale(Color a, float b){
-  return (Color) {a.r * b, a.g*b, a.b * b};
+  return (Color) {(int)((float) a.r * b),(int)((float)  a.g*b),(int)((float)  a.b * b)};
 }
 
 Color color_scale(Color a, vec3 b){
-  return (Color) {a.r * b.x, a.g*b.y, a.b * b.z};
+  return (Color) {(int)((float) a.r * b.x),(int) ((float) a.g*b.y),(int) ((float) a.b * b.z)};
 }
 
 Color color_add(Color a, Color b){
   return (Color) {a.r + b.r, a.g + b.g, a.b + b.b};
 }
 Color color_add(Color a, vec3 b){
-  return (Color) {a.r + b.x, a.g + b.y, a.b + b.z};
+  return (Color) {a.r +(int) b.x, a.g +(int) b.y, a.b + (int) b.z};
 }
 
 Color vec3_to_color(vec3 a){

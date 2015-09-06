@@ -1,5 +1,5 @@
-#define WIDTH 100
-#define HEIGHT 50
+#define WIDTH 400
+#define HEIGHT 200
 
 #include <stdio.h>
 #include <vector>
@@ -7,12 +7,13 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #include <SDL/SDL.h>
-#else 
+#else
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
+#include <thread>
 #endif
 #include "types.cpp"
 #include "material.cpp"
@@ -208,6 +209,20 @@ void renderBrowser(){
   emscripten_set_main_loop_arg(browserMainLoop, &args, 0, 0);
 
   #endif
+}
+
+
+void renderNative(){
+/*
+  RenderContext ctx = *initScreen();
+  Scene scene = *initScene();
+  //for (int i = HEIGHT - 1; i >= 0 ; i--) {
+    int i = 0;
+   LineArgs args = (LineArgs) {i, ctx, scene};
+    std::thread tl(renderLine, &args);
+  //}
+  tl.join();
+  */
 }
 
 
