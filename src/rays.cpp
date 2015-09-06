@@ -43,7 +43,7 @@ void renderLine(void* vargs) {
   printf("!!\n");
   for (int j = 0; j < WIDTH; j++) {
     printf("render px: %i %i\n", i, j);
-    paintPixel(j, i, renderPixelAA(j, i, s), ctx);
+    paintPixel(j, i, renderPixel(j, i, s), ctx);
     if (i%2 == 0 && j == 0) {
       printf("\nrender: %i/%i", i, HEIGHT);
       updateScreen(ctx);
