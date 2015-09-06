@@ -1,5 +1,5 @@
-#define WIDTH 600
-#define HEIGHT 400
+#define WIDTH 100
+#define HEIGHT 50
 
 #include <stdio.h>
 #include <vector>
@@ -133,6 +133,7 @@ Color renderPixel(int x, int y, Scene scene){
 
 
 Color renderAntiAliasedPixel(int x, int y, Scene scene){
+  printf("0 \n");
   // TODO - adaptive subsampling
   float x1 = (float) x / (float) WIDTH;
   float x2 = ((float) x + 0.5)  / (float) WIDTH;
@@ -143,7 +144,9 @@ Color renderAntiAliasedPixel(int x, int y, Scene scene){
   Ray ray3 = scene.camera.getRay(x2, y1);
   Ray ray4 = scene.camera.getRay(x2, y2);
 
+  printf(">1\n");
   Color avg = trace(ray1, 0, scene);
+  printf(">2\n");
   avg = color_add(avg, trace(ray2, 0, scene));
   avg = color_add(avg, trace(ray3, 0, scene));
   avg = color_add(avg, trace(ray4, 0, scene));
@@ -164,9 +167,12 @@ void renderLine(void* vargs) {
   LineArgs* args = (LineArgs*) vargs;
   int i = args->i;
   RenderContext ctx = args->ctx;
-  Scene scene = args->scene;
+  printf(">> %p \n", args);
+  Scene s = args->scene;
+  printf("!!\n");
   for (int j = 0; j < WIDTH; j++) {
-    paintPixel(j, i, renderAntiAliasedPixel(j, i, scene),ctx);
+    printf("render px: %i %i\n", i, j);
+    paintPixel(j, i, renderAntiAliasedPixel(j, i, s), ctx);
     if (i%2 == 0 && j == 0) {
       printf("\nrender: %i/%i", i, HEIGHT);
       updateScreen(ctx);
@@ -187,15 +193,34 @@ void paint(RenderContext ctx, Scene scene){
   }
 }
 
+void browserMainLoop(void* vargs){
+  printf("browser tick\n");
+  LineArgs* args = (LineArgs*) vargs;
+  RenderContext ctx = *initScreen();
+  args->ctx = ctx;
+  renderLine(&args);
+}
+
+void renderBrowser(){
+  #ifdef __EMSCRIPTEN__
+  printf("Browser start");
+  LineArgs args = (LineArgs) {0, NULL, *initScene()};
+  emscripten_set_main_loop_arg(browserMainLoop, &args, 0, 0);
+
+  #endif
+}
+
+
 extern "C" int main(int argc, char** argv) {
   test();
-  paint(initScreen(), initScene());
+  #ifndef __EMSCRIPTEN__
+  // render all as one.
+  paint(*initScreen(), *initScene());
   printf("\nTotal Rays: %i\n", totalRaysTraced);
-
-#ifndef __EMSCRIPTEN__
   SDL_Delay(5000);
-#endif
-  SDL_Quit();
+  #else
+  renderBrowser();
+  #endif
   return 0;
 }
 
