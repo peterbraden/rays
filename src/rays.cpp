@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <vector>
 #include <math.h>
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #include <SDL/SDL.h>
@@ -11,12 +12,14 @@
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
 #endif
-#include "types.cpp"
+
+#include "types.h"
 #include "material.cpp"
 #include "object.cpp"
 #include "camera.cpp"
 #include "scene.cpp"
 #include "paint.cpp"
+#include "trace.h"
 #include "test.cpp"
 
 
@@ -115,6 +118,8 @@ Color trace(Ray r, int depth, Scene scene){
 
   return out;
 }
+
+
 
 Color renderPixel(int x, int y, Scene scene){
   Ray ray = scene.camera.getRay((float) x / (float) scene.width, (float) y / (float) scene.height);

@@ -1,30 +1,6 @@
-typedef struct {
-  float x;
-  float y;
-  float z;
-} vec3;
-
-typedef struct {
-  int r;
-  int g;
-  int b;
-} Color;
-
-typedef struct {
-  vec3 ro;
-  vec3 rd;
-} Ray;
-
-class SceneObject;
-class Sphere;
-
-typedef struct {
-  float distance;
-  vec3 point;
-  vec3 normal;
-  SceneObject* obj;
-} Intersection;
-
+#include "types.h"
+#include <math.h>
+#include <stdio.h>
 
 Color color_scale(Color a, float b){
   return (Color) {a.r * b, a.g*b, a.b * b};
