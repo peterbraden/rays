@@ -16,7 +16,7 @@
 #include "types.h"
 #include "material.cpp"
 #include "object.cpp"
-#include "camera.cpp"
+#include "camera.h"
 #include "scene.cpp"
 #include "paint.cpp"
 #include "trace.h"
