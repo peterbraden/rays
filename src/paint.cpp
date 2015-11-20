@@ -16,26 +16,26 @@ void updateScreen(RenderContext ctx){
 #endif
 }
 
-void paintPixel(int x, int y, Color pix, RenderContext ctx){
+void paintPixel(int x, int y, int width, int height, Color pix, RenderContext ctx){
   if (SDL_MUSTLOCK(ctx.screen)) SDL_LockSurface(ctx.screen);
   int alpha = 255;
-  int sy = HEIGHT - 1 - y;
+  int sy = height - 1 - y;
   int offs = ctx.screen->pitch / sizeof(Uint32);
   int index = sy * offs + x;
   *((Uint32*)ctx.screen->pixels + index) = SDL_MapRGBA(ctx.screen->format, pix.r, pix.g, pix.b, alpha);
   if (SDL_MUSTLOCK(ctx.screen)) SDL_UnlockSurface(ctx.screen);
 }
 
-void initBackground(RenderContext ctx){
-  for (int i = 0; i < HEIGHT; i++) {
-    for (int j = 0; j < WIDTH; j++) {
+void initBackground(int width, int height, RenderContext ctx){
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
       int c = (j/2 + (i/2%2 == 0 ? 0 : 1)) % 2 == 0 ? 0 : 255;
-      paintPixel(j, i, (Color) {c, c, c} ,ctx);
+      paintPixel(j, i, width, height, (Color) {c, c, c} ,ctx);
     }
   }
 }
 
-RenderContext initScreen(){
+RenderContext initScreen(int width, int height){
   SDL_Init(SDL_INIT_VIDEO);
 
 #ifdef TEST_SDL_LOCK_OPTS
@@ -43,15 +43,15 @@ RenderContext initScreen(){
 #endif
 
 #ifdef __EMSCRIPTEN__
-  SDL_Surface *screen = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_SWSURFACE);
+  SDL_Surface *screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE);
   RenderContext ctx = {screen};
 #else
-  SDL_Window * window = SDL_CreateWindow("Rays", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
+  SDL_Window * window = SDL_CreateWindow("Rays", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
   SDL_GLContext context = SDL_GL_CreateContext(window);
   SDL_GL_MakeCurrent(window, context);
   SDL_Surface *screen = SDL_GetWindowSurface(window);
   RenderContext ctx = {screen, window};
 #endif 
-  initBackground(ctx);
+  initBackground(width, height, ctx);
   return ctx;
 }

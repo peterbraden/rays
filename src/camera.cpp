@@ -14,7 +14,7 @@ class Camera {
 	  float angle;
 
      
-	  Camera(vec3 u, vec3 loc, vec3 la, float a): angle(a){
+	  Camera(vec3 u, vec3 loc, vec3 la, float a, int width, int height): angle(a){
       up = u;
       location = loc;
       lookat = la;
@@ -26,7 +26,7 @@ class Camera {
       camy = vec3_norm(camy);
 
       tax = tan(angle);
-      tay = tan(((float) HEIGHT / (float) WIDTH) * angle);
+      tay = tan(((float) height / (float) width) * angle);
     }
 
     // NB. Proportional x and y

@@ -1,6 +1,3 @@
-#define WIDTH 600
-#define HEIGHT 400
-
 #include <stdio.h>
 #include <vector>
 #include <math.h>
@@ -120,7 +117,7 @@ Color trace(Ray r, int depth, Scene scene){
 }
 
 Color renderPixel(int x, int y, Scene scene){
-  Ray ray = scene.camera.getRay((float) x / (float) WIDTH, (float) y / (float) HEIGHT);
+  Ray ray = scene.camera.getRay((float) x / (float) scene.width, (float) y / (float) scene.height);
 
   Color pixel = trace(ray, 0, scene); 
 
@@ -130,10 +127,10 @@ Color renderPixel(int x, int y, Scene scene){
 
 
 Color renderAntiAliasedPixel(int x, int y, Scene scene){
-  float x1 = (float) x / (float) WIDTH;
-  float x2 = ((float) x + 0.5)  / (float) WIDTH;
-  float y1 = (float) y / (float) HEIGHT;
-  float y2 = ((float) y + 0.5)  / (float) HEIGHT;
+  float x1 = (float) x / (float) scene.width;
+  float x2 = ((float) x + 0.5)  / (float) scene.width;
+  float y1 = (float) y / (float) scene.height;
+  float y2 = ((float) y + 0.5)  / (float) scene.height;
   Ray ray1 = scene.camera.getRay(x1, y1);
   Ray ray2 = scene.camera.getRay(x1, y2);
   Ray ray3 = scene.camera.getRay(x2, y1);
@@ -161,10 +158,10 @@ void renderLine(void* vargs) {
   int i = args->i;
   RenderContext ctx = args->ctx;
   Scene scene = args->scene;
-  for (int j = 0; j < WIDTH; j++) {
-    paintPixel(j, i, renderAntiAliasedPixel(j, i, scene),ctx);
+  for (int j = 0; j < scene.width; j++) {
+    paintPixel(j, i, scene.width, scene.height, renderAntiAliasedPixel(j, i, scene),ctx);
     if (i%2 == 0 && j == 0) {
-      printf("\nrender: %i/%i", i, HEIGHT);
+      printf("\nrender: %i/%i", i, scene.height);
       updateScreen(ctx);
     }
   }
@@ -173,7 +170,7 @@ void renderLine(void* vargs) {
 
 
 void paint(RenderContext ctx, Scene scene){
-  for (int i = HEIGHT - 1; i >= 0 ; i--) {
+  for (int i = scene.height- 1; i >= 0 ; i--) {
     LineArgs args = (LineArgs) {i, ctx, scene};
 //#ifdef __EMSCRIPTEN__
 //    emscripten_async_call(renderLine, &args, 1);
@@ -185,7 +182,8 @@ void paint(RenderContext ctx, Scene scene){
 
 extern "C" int main(int argc, char** argv) {
   test();
-  paint(initScreen(), initScene());
+  Scene scene = initScene();
+  paint(initScreen(scene.width, scene.height), scene);
 
 #ifndef __EMSCRIPTEN__
   SDL_Delay(5000);
