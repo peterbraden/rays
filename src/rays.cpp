@@ -14,8 +14,8 @@
 #endif
 
 #include "types.h"
-#include "material.cpp"
-#include "object.cpp"
+#include "material.h"
+#include "object.h"
 #include "camera.h"
 #include "scene.cpp"
 #include "paint.cpp"

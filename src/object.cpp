@@ -1,42 +1,19 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdio.h>
+#include <math.h>
+#include <math.h>
 
-class SceneObject {
-  public:
-    virtual Intersection intersects(vec3 ro, vec3 rd) = 0;
-    virtual void printInfo() = 0;
-    virtual Material material(vec3 pt) = 0;
-};
+#include "object.h"
 
-class Sphere: public SceneObject {
-  private:
-    vec3 center;
-    float radius;
-    Material _material;
+Sphere::Sphere(vec3 c, float r, Color col) : radius(r) {
+  center = c;
+  _material.pigment = col;
+  _material.reflection = 0.5;
+  _material.phong = 40;
+}
 
-  public:
-    Sphere(vec3 c, float r, Color col) : radius(r) {
-      center = c;
-      _material.pigment = col;
-      _material.reflection = 0.5;
-      _material.phong = 40;
-    }
-
-    vec3 normal(vec3 pt);
-    Intersection intersects(vec3 ro, vec3 rd);
-    void printInfo();
-    Material material(vec3 pt);
-
-};
-
-class Plane: public SceneObject {
-  private:
-    float y;
-  public:
-    Plane(float height) : y(height) {}
-    Intersection intersects(vec3 ro, vec3 rd);
-    Material material(vec3 pt);
-    void printInfo();
-};
+Plane::Plane(float height) : y(height) {}
 
 
 Intersection Plane::intersects(vec3 ro, vec3 rd){
@@ -54,8 +31,6 @@ Material Plane::material(vec3 pt){
   Material m;
 	int zig = pt.x > 0 ? abs( (int) pt.x)/50 % 2 ? 1 : 0 : abs( (int) pt.x)/50 % 2 ? 0 : 1;
   int zag = pt.z > 0 ? abs( (int) pt.z)/50 % 2 ? 1 : 0 : abs( (int) pt.z)/50 % 2 ? 0 : 1;
-		
-  
 
 	if(!zig != !zag) { // zig XOR zag
     m.pigment = (Color){255,255,255};
@@ -68,9 +43,6 @@ Material Plane::material(vec3 pt){
 void Plane::printInfo(){
   printf("plane");
 }
-
-
-
 
 vec3 Sphere::normal(vec3 pt){
   return vec3_norm(vec3_sub(pt, center));
@@ -105,10 +77,3 @@ Intersection Sphere::intersects(vec3 ro, vec3 rd){
 void Sphere::printInfo(){
   printf("Sphere, radius: %f center:<%f,%f,%f> ", radius, center.x, center.y, center.z);
 }
-
-
-typedef struct {
-  vec3 location;
-  float intensity;
-} PointLight;
-
