@@ -1,9 +1,12 @@
 /* Abstract the nightmare that is SDL1.2 and SDL2 CrossCompat. */
 
-typedef struct {
+typedef struct RenderContext{
   SDL_Surface* screen;
 #ifndef __EMSCRIPTEN__
   SDL_Window* window;
+  RenderContext(SDL_Surface* s, SDL_Window* w) : screen(s), window(w) {}
+# else 
+  RenderContext(SDL_Surface* s) : screen(s) {}
 #endif
 } RenderContext;
 
@@ -35,7 +38,7 @@ void initBackground(int width, int height, RenderContext ctx){
   }
 }
 
-RenderContext initScreen(int width, int height){
+RenderContext* initScreen(int width, int height){
   SDL_Init(SDL_INIT_VIDEO);
 
 #ifdef TEST_SDL_LOCK_OPTS
@@ -44,14 +47,14 @@ RenderContext initScreen(int width, int height){
 
 #ifdef __EMSCRIPTEN__
   SDL_Surface *screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE);
-  RenderContext ctx = {screen};
+  RenderContext* ctx = new RenderContext(screen);
 #else
   SDL_Window * window = SDL_CreateWindow("Rays", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
   SDL_GLContext context = SDL_GL_CreateContext(window);
   SDL_GL_MakeCurrent(window, context);
   SDL_Surface *screen = SDL_GetWindowSurface(window);
-  RenderContext ctx = {screen, window};
+  RenderContext* ctx = new RenderContext(screen, window);
 #endif 
-  initBackground(width, height, ctx);
+  initBackground(width, height, *ctx);
   return ctx;
 }

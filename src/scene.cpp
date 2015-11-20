@@ -1,17 +1,7 @@
-typedef struct {
-  Camera camera;
-  std::vector<SceneObject*> objects; 
-  std::vector<PointLight> lights; // Should be generic light
-  float ambient; // Ambient light: 0 - 1;
-  int maxDepth;
-  int width;
-  int height;
-} Scene;
+#include "scene.h"
 
 
-
-
-Scene initScene (){
+Scene* initScene (){
   int width = 600;
   int height = 400;
 
@@ -21,27 +11,17 @@ Scene initScene (){
 
   Plane * surface = new Plane(-3.);
 
-  std::vector<SceneObject*> demoObjs;
+  std::vector<SceneObject*>* demoObjs = new std::vector<SceneObject*>();
 
-  demoObjs.push_back(a);
-  demoObjs.push_back(b);
-  demoObjs.push_back(c);
-  demoObjs.push_back(surface);
-  
-  
-  std::vector<PointLight> demoLights;
-  demoLights.push_back( (PointLight) { (vec3) {0, 10, 10}, 0.7 } );
+  demoObjs->push_back(a);
+  demoObjs->push_back(b);
+  demoObjs->push_back(c);
+  demoObjs->push_back(surface);
 
-  Camera defaultCamera = Camera((vec3) {0.,1.,0}, (vec3) {0.,0.,20}, (vec3) {0.,0.,0.}, 0.78, width, height); // ~ pi/4
-
-  Scene demoScene = {
-    defaultCamera,
-    demoObjs,
-    demoLights,
-    0.1, // Ambient
-    1, // maxDepth
-    width, height // image size
-  };
+  std::vector<PointLight>* demoLights = new std::vector<PointLight>();
+  demoLights->push_back( (PointLight) { (vec3) {0., 10., 10.}, 0.7 } );
+  Camera* defaultCamera = new Camera((vec3) {0.,1.,0}, (vec3) {20,5.,20}, (vec3) {0.,0.,0.}, 0.78, width, height); // ~ pi/4
+  Scene *demoScene = new Scene(*defaultCamera, *demoObjs, *demoLights, 0.1, 2, width, height);
   return demoScene;
 }
 
