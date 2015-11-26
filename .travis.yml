@@ -21,7 +21,7 @@ install:
   - (cd SDL2_ttf-2.0.12 && ./configure --prefix=$PREFIX && make -j5 && make install)
 
 script:
-  - make build
+  - CI_INCLUDES=-I$PREFIX/include make build
   - ./build/rays.out
   - img2txt screenshot.png
 
