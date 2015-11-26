@@ -12,7 +12,7 @@ install:
   - sudo apt-get install -y caca-utils
 
 script:
-  - make build
+  - make buildcpp
   - ./build/rays.out
   - img2txt screenshot.png
 
