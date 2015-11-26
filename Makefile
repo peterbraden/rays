@@ -3,7 +3,7 @@ BUILD=./build
 
 CC=g++
 CFLAGS=-Werror -Wall -std=c++0x
-INCLUDES=-I/usr/local/include -I./ext -I./src `echo $$CI_INCLUDES`
+INCLUDES=-I/usr/local/include -I./ext -I./src 
 LFLAGS=-L/usr/local/lib 
 PKG_CONFIG_SDL=`pkg-config --exists libsdl2 && pkg-config --libs --cflags libsdl2`
 LIBS=-lSDL2 -lpng $(PKG_CONFIG_SDL)
