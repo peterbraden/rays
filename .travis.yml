@@ -19,6 +19,8 @@ install:
   - (cd SDL2_mixer-2.0.0 && ./configure --prefix=$PREFIX && make -j5 && make install)
   - wget https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.12.tar.gz -O - | tar xz
   - (cd SDL2_ttf-2.0.12 && ./configure --prefix=$PREFIX && make -j5 && make install)
+  - sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
+  - apt-get install -y caca-utils
 
 script:
   - CI_INCLUDES=-I$PREFIX/include make build
