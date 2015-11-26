@@ -9,7 +9,7 @@ build: buildcpp
 .PHONY: build
 
 buildcpp:
-	g++ -L/usr/local/lib -lSDL2  -I/usr/local/include  src/rays.cpp src/types.cpp src/camera.cpp src/object.cpp -o $(BUILD)/rays.out
+	g++ -L/usr/local/lib -lSDL2 -lpng -I/usr/local/include -I./ext -x c ext/sdl-savepng/savepng.c -x c++ src/rays.cpp src/types.cpp src/camera.cpp src/object.cpp ext/sdl-savepng/savepng.c -o $(BUILD)/rays.out
 .PHONY: buildcpp
 
 devcpp: buildcpp

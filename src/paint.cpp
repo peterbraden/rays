@@ -1,3 +1,7 @@
+#ifndef __EMSCRIPTEN__
+#include "sdl-savepng/savepng.h"
+#endif
+
 /* Abstract the nightmare that is SDL1.2 and SDL2 CrossCompat. */
 
 typedef struct RenderContext{
@@ -38,6 +42,23 @@ void initBackground(int width, int height, RenderContext ctx){
   }
 }
 
+RenderContext* initOpenGLScreen(int width, int height) {
+  SDL_Window * window = SDL_CreateWindow("Rays", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
+  SDL_GLContext context = SDL_GL_CreateContext(window);
+  SDL_GL_MakeCurrent(window, context);
+  SDL_Surface *screen = SDL_GetWindowSurface(window);
+  RenderContext* ctx = new RenderContext(screen, window);
+  initBackground(width, height, *ctx);
+  return ctx;
+}
+
+RenderContext* initOffscreenScreen(int width, int height) {
+  SDL_Surface *screen = SDL_CreateRGBSurface(0,width,height,32,0,0,0,0);
+  RenderContext* ctx = new RenderContext(screen, NULL);
+  initBackground(width, height, *ctx);
+  return ctx;
+}
+
 RenderContext* initScreen(int width, int height){
   SDL_Init(SDL_INIT_VIDEO);
 
@@ -48,13 +69,28 @@ RenderContext* initScreen(int width, int height){
 #ifdef __EMSCRIPTEN__
   SDL_Surface *screen = SDL_SetVideoMode(width, height, 32, SDL_SWSURFACE);
   RenderContext* ctx = new RenderContext(screen);
-#else
-  SDL_Window * window = SDL_CreateWindow("Rays", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
-  SDL_GLContext context = SDL_GL_CreateContext(window);
-  SDL_GL_MakeCurrent(window, context);
-  SDL_Surface *screen = SDL_GetWindowSurface(window);
-  RenderContext* ctx = new RenderContext(screen, window);
-#endif 
-  initBackground(width, height, *ctx);
   return ctx;
+#else
+  return initOffscreenScreen(width, height);
+  //return initOpenGLScreen(width, height);
+#endif
+}
+
+void saveScreen(RenderContext* ctx){
+#ifndef __EMSCRIPTEN__
+  if (ctx->window == NULL) {
+    // Save image
+    printf("Saving image");
+    SDL_Surface *tmp = SDL_PNGFormatAlpha(ctx->screen);
+    if(SDL_SavePNG(tmp, "screenshot.png")){
+      printf("Unable to save png -- %s\n", SDL_GetError());
+    }
+    SDL_FreeSurface(tmp);
+  } else {
+    // Rendered in window, delay.
+    SDL_Delay(5000);
+  }
+#else
+  // Nothing to do in browser
+#endif
 }

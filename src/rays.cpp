@@ -63,8 +63,8 @@ void renderLine(void* vargs) {
   Scene scene = args->scene;
   for (int j = 0; j < scene.width; j++) {
     paintPixel(j, i, scene.width, scene.height, renderAntiAliasedPixel(j, i, scene),ctx);
-    if (i%2 == 0 && j == 0) {
-      printf("\nrender: %i/%i", i, scene.height);
+    if (i%(scene.height/10) == 0 && j == 0) {
+      printf("\nrender: %i/%i, traced: %i", i, scene.height, totalRaysTraced);
       updateScreen(ctx);
     }
   }
@@ -118,15 +118,17 @@ void renderNative(){
 extern "C" int main(int argc, char** argv) {
   test();
   Scene* scene = initScene();
-  paint(*initScreen(scene->width, scene->height), *scene);
+  printf("Initialised scene, %zu objects", scene->objects.size());
 
-#ifndef __EMSCRIPTEN__
+  #ifndef __EMSCRIPTEN__
   // render all as one.
-  paint(*initScreen(scene->width, scene->height), *scene);
+  RenderContext* ctx = initScreen(scene->width, scene->height);
+  paint(*ctx, *scene);
   printf("\nTotal Rays: %i\n", totalRaysTraced);
   //renderNative();
-  SDL_Delay(5000);
+  saveScreen(ctx);
   #else
+  paint(*initScreen(scene->width, scene->height), *scene);
   renderBrowser();
   #endif
   return 0;

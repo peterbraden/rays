@@ -1,0 +1,3 @@
+[submodule "ext/sdl-savepng"]
+	path = ext/sdl-savepng
+	url = git@github.com:driedfruit/SDL_SavePNG.git
