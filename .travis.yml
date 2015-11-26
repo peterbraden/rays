@@ -4,12 +4,12 @@ sudo: false
 addons:
   apt:
     sources:
-      - ppa:kalakris/cmake
-      - ppa:team-xbmc/ppa
+    - ppa:kalakris/cmake
+    - ppa:team-xbmc/ppa
    packages:
-     - cmake
-     - libXxf86vm-dev
-     - libsdl2-dev
+   - cmake
+   - libXxf86vm-dev
+   - libsdl2-dev
 
 script:
   - make build
