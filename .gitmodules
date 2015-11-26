@@ -1,6 +1,3 @@
 [submodule "ext/sdl-savepng"]
 	path = ext/sdl-savepng
 	url = git@github.com:peterbraden/SDL_SavePNG.git
-[submodule "ext/jsoncpp"]
-	path = ext/jsoncpp
-	url = git@github.com:open-source-parsers/jsoncpp.git
