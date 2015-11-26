@@ -17,8 +17,7 @@ C_OBJS=$(C_SRCS:.c=.c.o)
 
 buildEmscripten:
 	mkdir -p build
-	$(EMSCRIPTEN) -s ALLOW_MEMORY_GROWTH=1 -s DEMANGLE_SUPPORT=1 -s ASSERTIONS=2 -g3 src/rays.cpp -o $(BUILD)/rays.html
-	#$(EMSCRIPTEN) -s ALLOW_MEMORY_GROWTH=1 -g3 src/rays.cpp -o $(BUILD)/rays.html
+	$(EMSCRIPTEN) -s ALLOW_MEMORY_GROWTH=1 -s DEMANGLE_SUPPORT=1 -s ASSERTIONS=2 -g3 $(SRCS) -o $(BUILD)/rays.html
 .PHONY: build
 
 
