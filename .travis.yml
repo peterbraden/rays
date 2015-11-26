@@ -1,27 +1,12 @@
 language: cpp
+cache: apt
+
 before_install:
-  - sudo add-apt-repository -y ppa:kalakris/cmake
-  - sudo add-apt-repository -y ppa:team-xbmc/ppa
-  - sudo apt-get update -qq
+  - sudo add-apt-repository -y ppa:zoogie/sdl2-snapshots
 
 install:
   - sudo apt-get -y -qq update
-  - sudo apt-get -y -qq install curl make libgc-dev
-  - git clone --depth=1 git://github.com/nddrylliog/rock.git 
-  - (cd rock && make -s quick-rescue)
-  - mkdir dummyprefix
-  - export PREFIX=$PWD/dummyprefix
-  - export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
-  - export PATH=$PATH:$PWD/rock/bin:$PWD/dummyprefix/bin
-  - wget http://libsdl.org/release/SDL2-2.0.1.tar.gz -O - | tar xz
-  - (cd SDL2-2.0.1 && ./configure --prefix=$PREFIX && make -j5 && make install)
-  - wget http://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.0.tar.gz -O - | tar xz
-  - (cd SDL2_image-2.0.0 && ./configure --prefix=$PREFIX && make -j5 && make install)
-  - wget http://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.0.tar.gz -O - | tar xz
-  - (cd SDL2_mixer-2.0.0 && ./configure --prefix=$PREFIX && make -j5 && make install)
-  - wget https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.12.tar.gz -O - | tar xz
-  - (cd SDL2_ttf-2.0.12 && ./configure --prefix=$PREFIX && make -j5 && make install)
-  - sudo apt-get install -y caca-utils
+  - sudo apt-get install --force-yes libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2
 
 script:
   - make build
