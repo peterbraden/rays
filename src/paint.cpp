@@ -43,6 +43,7 @@ void initBackground(int width, int height, RenderContext ctx){
 }
 
 RenderContext* initOpenGLScreen(int width, int height) {
+  #ifndef __EMSCRIPTEN__
   SDL_Window * window = SDL_CreateWindow("Rays", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
   SDL_GLContext context = SDL_GL_CreateContext(window);
   SDL_GL_MakeCurrent(window, context);
@@ -50,13 +51,20 @@ RenderContext* initOpenGLScreen(int width, int height) {
   RenderContext* ctx = new RenderContext(screen, window);
   initBackground(width, height, *ctx);
   return ctx;
+  #else
+  return NULL;
+  #endif
 }
 
 RenderContext* initOffscreenScreen(int width, int height) {
+  #ifndef __EMSCRIPTEN__
   SDL_Surface *screen = SDL_CreateRGBSurface(0,width,height,32,0,0,0,0);
   RenderContext* ctx = new RenderContext(screen, NULL);
   initBackground(width, height, *ctx);
   return ctx;
+  #else
+  return NULL;
+  #endif
 }
 
 RenderContext* initScreen(int width, int height){

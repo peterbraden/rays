@@ -1,16 +1,41 @@
-EMSCRIPTEN=../emscripten/emcc
+EMSCRIPTEN=emcc
 BUILD=./build
 
-build: buildcpp
+CC=g++
+CFLAGS=-Werror -Wall -std=c++0x
+INCLUDES=-I/usr/local/include -I./ext -I./src
+LFLAGS=-L/usr/local/lib 
+LIBS=-lSDL2 -lpng
+
+SRCS=src/rays.cpp src/types.cpp src/camera.cpp src/object.cpp 
+OBJS=$(SRCS:.cpp=.cpp.o)
+
+C_SRCS=ext/sdl-savepng/savepng.c
+C_OBJS=$(C_SRCS:.c=.c.o)
+
+
+buildEmscripten:
 	mkdir -p build
-	g++ `sdl2-config --cflags --libs` -Werror -Wall -std=c++0x -pthread src/rays.cpp -o $(BUILD)/rays.out
-	#$(EMSCRIPTEN) -s ALLOW_MEMORY_GROWTH=1 -s DEMANGLE_SUPPORT=1 -s ASSERTIONS=2 -g3 src/rays.cpp -o $(BUILD)/rays.html
+	$(EMSCRIPTEN) -s ALLOW_MEMORY_GROWTH=1 -s DEMANGLE_SUPPORT=1 -s ASSERTIONS=2 -g3 src/rays.cpp -o $(BUILD)/rays.html
 	#$(EMSCRIPTEN) -s ALLOW_MEMORY_GROWTH=1 -g3 src/rays.cpp -o $(BUILD)/rays.html
 .PHONY: build
 
-buildcpp:
-	g++ -L/usr/local/lib -lSDL2 -lpng -I/usr/local/include -I./ext -x c ext/sdl-savepng/savepng.c -x c++ src/rays.cpp src/types.cpp src/camera.cpp src/object.cpp ext/sdl-savepng/savepng.c -o $(BUILD)/rays.out
+
+buildcpp: $(OBJS) $(C_OBJS)
+	$(CC) $(LFLAGS) $(LIBS) $(INCLUDES) $(OBJS) $(C_OBJS) -o $(BUILD)/rays.out
+	#g++ `sdl2-config --cflags --libs` -Werror -Wall -std=c++0x -pthread src/rays.cpp -o $(BUILD)/rays.out
 .PHONY: buildcpp
+
+build: buildcpp buildEmscripten
+
+%.cpp.o: %.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+%.c.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+clean:
+	rm -f $(OBJS) $(C_OBJS)
 
 devcpp: buildcpp
 	$(BUILD)/rays.out
