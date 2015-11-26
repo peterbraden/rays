@@ -1,14 +1,7 @@
 language: cpp
 
 sudo: false
-
-addons:
-  apt:
-    packages:
-      - cmake
-      - libXxf86vm-dev
-      - libsdl2-dev
-
+addons: {apt: { packages: cmake libsdl2-dev } }
 script:
   - make build
   - ./build/rays.out
