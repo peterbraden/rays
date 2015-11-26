@@ -1,3 +1,0 @@
-[submodule "ext/sdl-savepng"]
-	path = ext/sdl-savepng
-	url = git@github.com:peterbraden/SDL_SavePNG.git
