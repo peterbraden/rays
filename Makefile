@@ -24,7 +24,7 @@ buildEmscripten:
 
 buildcpp: $(OBJS) $(C_OBJS)
 	mkdir -p build
-	$(CC) $(LFLAGS) $(LIBS) $(INCLUDES) $(OBJS) $(C_OBJS) -o $(BUILD)/rays.out
+	$(CC) $(LFLAGS) $(INCLUDES) $(OBJS) $(C_OBJS) -o $(BUILD)/rays.out $(LIBS)
 	#g++ `sdl2-config --cflags --libs` -Werror -Wall -std=c++0x -pthread src/rays.cpp -o $(BUILD)/rays.out
 .PHONY: buildcpp
 
