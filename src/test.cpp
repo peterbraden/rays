@@ -1,3 +1,10 @@
+#include <stdio.h>
+#include <vector>
+
+#include "types.h"
+#include "scene.h"
+#include "trace.h"
+
 void assertEqual(float x, float y, const char* m){
   if (x != y){
     printf("Error (float): %f != %f (%s)\n", x, y, m);

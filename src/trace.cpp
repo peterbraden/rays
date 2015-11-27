@@ -1,11 +1,5 @@
 /* Ray tracing algorithm */
-#include <stdio.h>
-#include <vector>
-#include <math.h>
-
-#include "types.h"
-#include "material.h"
-#include "scene.h"
+#include "trace.h"
 
 std::vector<Intersection> intersect(vec3 ro, vec3 rd, Scene scene){
   std::vector<Intersection> v;
@@ -44,12 +38,11 @@ Intersection nearestIntersection(vec3 ro, vec3 rd, float max, float min, Scene s
   return closest;
 }
 
-unsigned int totalRaysTraced = 0;
 float max = std::numeric_limits<float>::max();
 
 // trace ro->rd into scene.
 Color trace(Ray r, int depth, Scene scene){
-  totalRaysTraced ++;
+  //totalRaysTraced ++;
 
   Intersection closest = nearestIntersection(r.ro, r.rd, max, 0, scene);
 

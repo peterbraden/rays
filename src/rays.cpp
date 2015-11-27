@@ -2,20 +2,21 @@
 #include <vector>
 #include <math.h>
 
-
 #include "types.h"
 #include "material.h"
 #include "object.h"
 #include "camera.h"
-#include "scene.cpp"
-#include "trace.cpp"
 #include "render.h"
-#include "render.cpp"
-#include "paint.cpp"
 #include "trace.h"
-#include "test.cpp"
+#include "paint.h"
+#include "scene.h"
 
 
+typedef struct {
+  int i;
+  RenderContext ctx;
+  Scene scene;
+} LineArgs;
 
 
 Color renderAntiAliasedPixel(int x, int y, Scene scene){
@@ -38,13 +39,6 @@ Color renderAntiAliasedPixel(int x, int y, Scene scene){
   return avg;
 }
 
-
-typedef struct {
-  int i;
-  RenderContext ctx;
-  Scene scene;
-} LineArgs;
-
 void renderLine(void* vargs) {
   LineArgs* args = (LineArgs*) vargs;
   int i = args->i;
@@ -53,7 +47,7 @@ void renderLine(void* vargs) {
   for (int j = 0; j < scene.width; j++) {
     paintPixel(j, i, scene.width, scene.height, renderAntiAliasedPixel(j, i, scene),ctx);
     if (i%(scene.height/10) == 0 && j == 0) {
-      printf("\nrender: %i/%i, traced: %i", i, scene.height, totalRaysTraced);
+      printf("\nrender: %i/%i, traced: %i", i, scene.height, 0);//totalRaysTraced);
       updateScreen(ctx);
     }
   }
@@ -105,7 +99,6 @@ void renderNative(){
 
 
 extern "C" int main(int argc, char** argv) {
-  test();
   Scene* scene = initScene();
   printf("Initialised scene, %zu objects", scene->objects.size());
 
@@ -113,7 +106,7 @@ extern "C" int main(int argc, char** argv) {
   // render all as one.
   RenderContext* ctx = initScreen(scene->width, scene->height);
   paint(*ctx, *scene);
-  printf("\nTotal Rays: %i\n", totalRaysTraced);
+  printf("\nTotal Rays: %i\n", 0);// totalRaysTraced);
   //renderNative();
   saveScreen(ctx);
   #else

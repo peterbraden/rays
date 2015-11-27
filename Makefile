@@ -2,24 +2,28 @@ EMSCRIPTEN=emcc
 BUILD=./build
 
 CC=g++
-CFLAGS=
+CFLAGS=-MMD
 #-Werror -Wall -std=c++0x
 INCLUDES=-I/usr/local/include -I./ext -I./src 
 LFLAGS=-L/usr/local/lib 
 PKG_CONFIG_SDL=`sdl2-config --cflags --libs`
 LIBS=-lpng $(PKG_CONFIG_SDL)
-
-SRCS=src/rays.cpp src/types.cpp src/camera.cpp src/object.cpp 
-OBJS=$(SRCS:.cpp=.cpp.o)
-
 C_SRCS=ext/sdl-savepng/savepng.c
 C_OBJS=$(C_SRCS:.c=.c.o)
+
+
+SRCS=$(wildcard src/*.cpp)
+OBJS=$(addprefix obj/, $(notdir $(SRCS:.cpp=.cpp.o)))
+
 
 devcpp: buildcpp
 	# Build successfully
 	$(BUILD)/rays.out
 .PHONY: devcpp
 .DEFAULT: devcpp
+
+install:
+	mkdir -p obj
 
 buildEmscripten:
 	mkdir -p build
@@ -35,14 +39,14 @@ buildcpp: $(OBJS) $(C_OBJS)
 
 build: buildcpp buildEmscripten
 
-%.cpp.o: %.cpp
+obj/%.cpp.o: src/%.cpp
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 %.c.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(C_OBJS)
+	rm -f ./obj/* 
 
 
 

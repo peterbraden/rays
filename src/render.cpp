@@ -1,3 +1,7 @@
+#include "types.h"
+#include "scene.h"
+#include "trace.h"
+
 //struct Image {};
 
 
