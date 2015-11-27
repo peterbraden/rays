@@ -45,10 +45,11 @@ extern "C" int main(int argc, char** argv) {
   printf("\nImage: %ix%i  Total Rays: %zu (avg pp: %zu)\n",
       scene->width, scene->height, stats->raysTraced,
       stats->raysTraced / (scene->width * scene->height));
-  printf("\n %.f seconds (%.f rays per sec)\n", elapsed, stats->raysTraced / elapsed);
+
+  printf("\n%.f seconds (%.f rays per sec)\n",
+      elapsed, stats->raysTraced / elapsed);
 
   #ifndef __EMSCRIPTEN__
-  //renderNative();
   saveScreen(ctx);
   #else
   renderBrowser();

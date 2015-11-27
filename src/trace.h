@@ -4,11 +4,12 @@
 #include <stdio.h>
 #include <vector>
 #include <math.h>
+#include <time.h>
+#include <limits>
 
 #include "types.h"
 #include "material.h"
 #include "scene.h"
-#include <time.h>
 
 typedef struct RenderStats {
   unsigned long raysTraced;
