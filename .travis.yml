@@ -13,6 +13,7 @@ install:
   - pkg-config --exists libsdl2 && pkg-config --libs --cflags libsdl2 || sdl2-config --cflags --libs
 
 script:
+  - make install
   - make buildcpp
   - ./build/rays.out
   - img2txt screenshot.png
