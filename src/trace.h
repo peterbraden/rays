@@ -8,12 +8,16 @@
 #include "types.h"
 #include "material.h"
 #include "scene.h"
+#include <time.h>
 
-//extern unsigned int totalRaysTraced = 0;
-
+typedef struct RenderStats {
+  unsigned long raysTraced;
+  time_t startTime;
+  RenderStats(unsigned long i, time_t start): raysTraced(i), startTime(start) {};
+} RenderStats;
 
 std::vector<Intersection> intersect(vec3 ro, vec3 rd, Scene scene);
 Intersection nearestIntersection(vec3 ro, vec3 rd, float max, float min, Scene scene);
-Color trace(Ray r, int depth, Scene scene);
+Color trace(Ray r, int depth, Scene scene, RenderStats* stats);
 
 #endif

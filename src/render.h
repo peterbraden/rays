@@ -3,13 +3,11 @@
 
 #include "types.h" 
 #include "scene.h" 
+#include "trace.h"
+
 
 // Per Pixel, no side effects
-Color renderPixel(int screenX, int screenY, Scene s);
-Color renderPixelAA(int screenX, int screenY, Scene s);
-
-// Chunks of pixels, output data goes into Image struct
-//void renderLine(int x, Scene s, Image im);
-
+Color renderPixel(int screenX, int screenY, Scene s, RenderStats* r);
+Color renderAntiAliasedPixel(int x, int y, Scene scene, RenderStats* r);
 
 #endif

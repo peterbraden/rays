@@ -41,8 +41,8 @@ Intersection nearestIntersection(vec3 ro, vec3 rd, float max, float min, Scene s
 float max = std::numeric_limits<float>::max();
 
 // trace ro->rd into scene.
-Color trace(Ray r, int depth, Scene scene){
-  //totalRaysTraced ++;
+Color trace(Ray r, int depth, Scene scene, RenderStats* stats){
+  stats->raysTraced ++;
 
   Intersection closest = nearestIntersection(r.ro, r.rd, max, 0, scene);
 
@@ -90,7 +90,7 @@ Color trace(Ray r, int depth, Scene scene){
     Ray refl;
     refl.ro = closest.point;
     refl.rd = vec3_sub(r.rd, vec3_scale(closest.normal, 2.0 * vec3_dot(closest.normal, r.rd)));
-    Color rc = trace(refl, depth + 1, scene);
+    Color rc = trace(refl, depth + 1, scene, stats);
     out = color_add(color_scale(out, 1 - material.reflection), color_scale(rc, material.reflection)); 
   }
   
