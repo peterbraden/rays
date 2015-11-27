@@ -8,7 +8,7 @@ class Camera {
     vec3 camx;
     vec3 camy;
     vec3 camz;
-    vec3 ncamz;
+//    vec3 ncamz;
     float tax;
     float tay;
 

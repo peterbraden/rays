@@ -2,7 +2,8 @@ EMSCRIPTEN=emcc
 BUILD=./build
 
 CC=g++
-CFLAGS=-Werror -Wall -std=c++0x
+CFLAGS=
+#-Werror -Wall -std=c++0x
 INCLUDES=-I/usr/local/include -I./ext -I./src 
 LFLAGS=-L/usr/local/lib 
 PKG_CONFIG_SDL=`sdl2-config --cflags --libs`
@@ -14,6 +15,11 @@ OBJS=$(SRCS:.cpp=.cpp.o)
 C_SRCS=ext/sdl-savepng/savepng.c
 C_OBJS=$(C_SRCS:.c=.c.o)
 
+devcpp: buildcpp
+	# Build successfully
+	$(BUILD)/rays.out
+.PHONY: devcpp
+.DEFAULT: devcpp
 
 buildEmscripten:
 	mkdir -p build
@@ -38,6 +44,6 @@ build: buildcpp buildEmscripten
 clean:
 	rm -f $(OBJS) $(C_OBJS)
 
-devcpp: buildcpp
-	$(BUILD)/rays.out
-.PHONY: devcpp
+
+
+

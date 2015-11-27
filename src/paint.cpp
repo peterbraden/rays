@@ -1,3 +1,23 @@
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <SDL/SDL.h>
+#else
+#include <SDL2/SDL.h>
+#include <stdio.h>
+
+#ifdef __APPLE__
+#  include <OpenGL/gl.h>
+#  include <OpenGL/glu.h>
+#  include <GLUT/glut.h>
+#else
+#  include <GL/gl.h>
+#  include <GL/glu.h>
+#  include <GL/glut.h>
+#endif
+
+#include <thread>
+#endif
+
 #ifndef __EMSCRIPTEN__
 #include "sdl-savepng/savepng.h"
 #endif
