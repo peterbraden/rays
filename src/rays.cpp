@@ -8,6 +8,7 @@
 #include "trace.h"
 #include "paint.h"
 #include "scene.h"
+#include "scenegraph.h"
 
 
 void paint(RenderContext ctx, Scene scene, RenderStats* stats){
@@ -28,7 +29,7 @@ void paint(RenderContext ctx, Scene scene, RenderStats* stats){
 extern "C" int main(int argc, char** argv) {
   Scene* scene = initScene();
 
-  printf("Initialised scene, %zu objects", scene->objects.size());
+  printf("Initialised scene, %i objects", scene->objects.size());
 
   time_t start;
   time(&start);

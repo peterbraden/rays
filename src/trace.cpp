@@ -1,50 +1,11 @@
 /* Ray tracing algorithm */
 #include "trace.h"
 
-std::vector<Intersection> intersect(vec3 ro, vec3 rd, Scene scene){
-  std::vector<Intersection> v;
-
-  for(int i = scene.objects.size()-1; i>=0; --i) {
-    //printf("Iterate objects: %i of %zi \n", i, scene.objects.size());
-    Intersection intersect = scene.objects[i]->intersects(ro, rd);
-    if (intersect.distance > 0){
-      v.push_back(intersect);
-    }
-  }
-  //printf("Intersection %zi", v.size());
-
-  return v;
-}
-
-Intersection nearestIntersection(vec3 ro, vec3 rd, float max, float min, Scene scene){
-  Intersection closest;
-  closest.distance = std::numeric_limits<float>::max();
-  int intersects = 0;
-
-  for(int i = scene.objects.size()-1; i>=0; --i) {
-    Intersection intersect = scene.objects[i]->intersects(ro, rd);
-    if (intersect.distance > 0 && 
-        intersect.distance < closest.distance &&
-        intersect.distance < max &&
-        intersect.distance > min){
-      closest = intersect;
-      intersects = 1;
-    }
-  }
-
-  if (intersects == 0){
-    closest.distance = -1;
-  }
-  return closest;
-}
-
-float max = std::numeric_limits<float>::max();
-
 // trace ro->rd into scene.
 Color trace(Ray r, int depth, Scene scene, RenderStats* stats){
   stats->raysTraced ++;
 
-  Intersection closest = nearestIntersection(r.ro, r.rd, max, 0, scene);
+  Intersection closest = scene.objects.nearestIntersection(r.ro, r.rd, std::numeric_limits<float>::max(), 0);
 
   if (closest.distance < 0) {
     // No Intersection.
@@ -61,7 +22,7 @@ Color trace(Ray r, int depth, Scene scene, RenderStats* stats){
 
   for(int i = scene.lights.size()-1; i>=0; --i) {
     vec3 lightVec = vec3_sub(scene.lights[i].location, closest.point);
-    Intersection shadow = nearestIntersection(closest.point, lightVec, vec3_len(lightVec), 0.05, scene);
+    Intersection shadow = scene.objects.nearestIntersection(closest.point, lightVec, vec3_len(lightVec), 0.05);
     // if there's an intersection (dist > 0) then the point is shadowed.
     if (shadow.distance < 0){
 

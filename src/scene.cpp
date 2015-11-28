@@ -1,9 +1,10 @@
 #include "scene.h"
 
-
 Scene* initScene (){
   int width = 600;
   int height = 400;
+
+  SceneGraph* demoObjs = new SceneGraph();
 
   Sphere *a = new Sphere((vec3) {4.,0.,0.}, 2., (Color) { 0, 255, 0});
   Sphere *b = new Sphere((vec3) {-4.,0.,0.}, 2., (Color) {0, 0, 255});
@@ -11,16 +12,14 @@ Scene* initScene (){
 
   Plane * surface = new Plane(-3.);
 
-  std::vector<SceneObject*>* demoObjs = new std::vector<SceneObject*>();
-
-  demoObjs->push_back(a);
-  demoObjs->push_back(b);
-  demoObjs->push_back(c);
-  demoObjs->push_back(surface);
+  demoObjs->insertObject(a);
+  demoObjs->insertObject(b);
+  demoObjs->insertObject(c);
+  demoObjs->insertObject(surface);
 
   for (int i = 0; i < 50; i++){
     Sphere *x = new Sphere((vec3) {0.,0., (float)i*-4 + 4}, 2, (Color) {100,100,100});
-    demoObjs->push_back(x);
+    demoObjs->insertObject(x);
 
   }
 
