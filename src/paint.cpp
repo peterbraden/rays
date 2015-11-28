@@ -73,7 +73,7 @@ void saveScreen(RenderContext* ctx){
 #ifndef __EMSCRIPTEN__
   if (ctx->window == NULL) {
     // Save image
-    printf("Saving image");
+    printf("Saving image\n");
     SDL_Surface *tmp = SDL_PNGFormatAlpha(ctx->screen);
     if(SDL_SavePNG(tmp, "screenshot.png")){
       printf("Unable to save png -- %s\n", SDL_GetError());
