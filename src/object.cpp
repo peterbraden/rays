@@ -1,7 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdio.h>
-#include <math.h>
 #include <math.h>
 
 #include "object.h"
@@ -26,6 +24,9 @@ Intersection Plane::intersects(vec3 ro, vec3 rd){
   return (Intersection) {dist, pt, norm, this};
 }
 
+BBox* Plane::getBounds() {
+  return NULL;
+}
 
 Material Plane::material(vec3 pt){
   Material m;
@@ -76,4 +77,11 @@ Intersection Sphere::intersects(vec3 ro, vec3 rd){
 
 void Sphere::printInfo(){
   printf("Sphere, radius: %f center:<%f,%f,%f> ", radius, center.x, center.y, center.z);
+}
+
+BBox* Sphere::getBounds(){
+  return new BBox(
+    (vec3) {center.x - radius, center.y - radius, center.z - radius}, // neg?
+    (vec3) {center.x + radius, center.y + radius, center.z + radius}
+    );
 }

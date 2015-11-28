@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 
+
 Color color_scale(Color a, float b){
   return (Color) {(int)((float) a.r * b),(int)((float)  a.g*b),(int)((float)  a.b * b)};
 }
@@ -78,3 +79,4 @@ vec3 vec3_mul_cross(vec3 a, vec3  b){
 void vec3_print(vec3 a){
   printf("<%f, %f, %f>", a.x, a.y, a.z);
 }
+

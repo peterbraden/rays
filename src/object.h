@@ -9,6 +9,7 @@ class SceneObject {
     virtual Intersection intersects(vec3 ro, vec3 rd) = 0;
     virtual void printInfo() = 0;
     virtual Material material(vec3 pt) = 0;
+    virtual BBox* getBounds() = 0;
 };
 
 class Sphere: public SceneObject {
@@ -21,6 +22,7 @@ class Sphere: public SceneObject {
     Sphere(vec3 c, float r, Color col);
     vec3 normal(vec3 pt);
     Intersection intersects(vec3 ro, vec3 rd);
+    BBox* getBounds();
     void printInfo();
     Material material(vec3 pt);
 };
@@ -33,6 +35,7 @@ class Plane: public SceneObject {
     Material material(vec3 pt);
     Intersection intersects(vec3 ro, vec3 rd);
     void printInfo();
+    BBox* getBounds();
 };
 
 typedef struct {

@@ -1,6 +1,9 @@
 #ifndef RAYS_TYPE
 #define RAYS_TYPE
 
+#include <stdio.h>
+#include <limits>
+
 typedef struct {
   float x;
   float y;
@@ -27,6 +30,13 @@ typedef struct {
   vec3 normal;
   SceneObject* obj;
 } Intersection;
+
+// Axis aligned bounding box
+typedef struct BBox{
+  vec3 min; // Point closest to origin
+  vec3 max; // Opposing point
+  BBox(vec3 l, vec3 g) : min(l), max(g) {};
+} BBox;
 
 
 Color color_scale(Color a, float b);
