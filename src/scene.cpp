@@ -1,8 +1,8 @@
 #include "scene.h"
 
 Scene* initScene (){
-  int width = 600;
-  int height = 400;
+  int width = 320;
+  int height = 240;
 
   SceneGraph* demoObjs = new SceneGraph();
 

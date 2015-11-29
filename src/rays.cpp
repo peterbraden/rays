@@ -28,8 +28,9 @@ void paint(RenderContext ctx, Scene scene, RenderStats* stats){
 
 extern "C" int main(int argc, char** argv) {
   Scene* scene = initScene();
-
+  scene->objects.buildIndices();
   printf("Initialised scene, %i objects", scene->objects.size());
+
 
   time_t start;
   time(&start);
