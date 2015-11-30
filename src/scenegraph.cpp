@@ -4,36 +4,22 @@ void SceneGraph::insertObject(SceneObject* obj) {
   objects.push_back(obj);
 }
 
-bool intersectsBBox(vec3 ro, vec3 invrd, BBox b){
-  //http://tavianator.com/fast-branchless-raybounding-box-intersections/
 
-  double tx1 = (b.min.x - ro.x)*invrd.x;
-  double tx2 = (b.max.x - ro.x)*invrd.x;
-
-  double tmin = fmin(tx1, tx2);
-  double tmax = fmax(tx1, tx2);
-
-  double ty1 = (b.min.y - ro.y)*invrd.y;
-  double ty2 = (b.max.y - ro.y)*invrd.y;
-
-  tmin = fmax(tmin, fmin(ty1, ty2));
-  tmax = fmin(tmax, fmax(ty1, ty2));
-
-  return tmax >= tmin;
+SceneGraphNode* SceneGraph::nextLeaf(vec3 ro, vec3 rd) {
+  return NULL;
 }
-vec3 invert(vec3 rd){
-  return (vec3) {1.0/rd.x, 1.0/rd.y, 1.0/rd.z}; 
-};
-
 
 Intersection SceneGraph::nearestIntersection(vec3 ro, vec3 rd, float max, float min){
   Intersection closest;
   closest.distance = max;
-  int intersects = 0;
-  vec3 invrd = invert(rd);
+  bool intersects = false;
+  vec3 invrd = vec3_invert(rd);
 
   // Search the Tree
+  // 1. Is ro inside node->bounds?
   SceneGraphNode* node = root;
+  bool inside = contains(*node->bounds, ro);
+
   if (intersectsBBox(ro, invrd, *node->bounds)){
     // if leaf
     for (int i = 0; i < node->objects.size(); i++){
@@ -43,7 +29,7 @@ Intersection SceneGraph::nearestIntersection(vec3 ro, vec3 rd, float max, float 
           intersect.distance < max &&
           intersect.distance > min){
         closest = intersect;
-        intersects = 1;
+        intersects = true;
       }
     }
   }
@@ -56,11 +42,11 @@ Intersection SceneGraph::nearestIntersection(vec3 ro, vec3 rd, float max, float 
         intersect.distance < max &&
         intersect.distance > min){
       closest = intersect;
-      intersects = 1;
+      intersects = true;
     }
   }
 
-  if (intersects == 0){
+  if (intersects == false){
     closest.distance = -1;
   }
   return closest;
@@ -72,18 +58,62 @@ unsigned int SceneGraph::size() {
 }
 
 
-void SceneGraph::partitionScene(SceneGraphNode* node, int maxDepth){
-  // Octree equal child split.
-  if (node->depth >= maxDepth){
-    node->isLeaf = true;
-    return;
-  }
+
+// Octree equal child split.
+int SceneGraph::partitionScene(SceneGraphNode* node, int maxDepth){
+  BBox bounds = *node->bounds;
+
+  printf("\n%*s -> [%.f,%.f,%.f] [%.f,%.f,%.f] %i objects", 
+      node->depth*4, " ",
+      bounds.min.x, bounds.min.y, bounds.min.z,
+      bounds.max.x, bounds.max.y, bounds.max.z,
+      node->objects.size());
   
+  int subnodes = 1;
+  // Create children;
   for (int i = 0; i < 8; i++){
-    // 
+    // Calc top corner offset
+    int xoffs = i % 2;
+    int yoffs = (i / 2) % 2;
+    int zoffs = (i / 4) % 2;
+    float xdiff = bounds.max.x - bounds.min.x;
+    float ydiff = bounds.max.y - bounds.min.y;
+    float zdiff = bounds.max.z - bounds.min.z;
+    float xmin = bounds.min.x + (xoffs ? xdiff/2 : 0);
+    float ymin = bounds.min.y + (yoffs ? ydiff/2 : 0);
+    float zmin = bounds.min.z + (zoffs ? zdiff/2 : 0);
+    float xmax = bounds.min.x + (xoffs ? xdiff : xdiff/2 );
+    float ymax = bounds.min.y + (yoffs ? ydiff : ydiff/2 );
+    float zmax = bounds.min.z + (zoffs ? zdiff : zdiff/2 );
+    BBox* b = new BBox(
+        (vec3) {xmin, ymin, zmin},
+        (vec3) {xmax, ymax, zmax}
+        ); 
+     
+    SceneGraphNode* n = new SceneGraphNode(b);
+    n->parent = node;
+    n->depth = node->depth + 1;
+
+    // Which objects are in this new BBox?
+    for (int j = 0; j< node->objects.size(); j++) {
+    
+      if (intersectsBBox(*b, *node->objects[j]->getBounds())){
+        // TODO CACHE
+        n->objects.push_back(node->objects[j]);
+      }
+    }
+
+    if (n->depth >= maxDepth) continue;
+    if (n->objects.size() == 0) continue; // Empty leaf node;
+    
+    node->children[i] = n;
+
+    if (n->objects.size() > 1){
+      subnodes += partitionScene(n, maxDepth);
+    }
   }
 
-
+  return subnodes;
 }
 
 void SceneGraph::buildIndices(){
@@ -127,6 +157,8 @@ void SceneGraph::buildIndices(){
     root->objects.push_back(objects[i]);
   }
 
+  root->depth = 0;
+  int nodes = partitionScene(root, 2);
 
 
   printf("\nScene Graph:");
@@ -135,6 +167,7 @@ void SceneGraph::buildIndices(){
   printf("\n - Bounded: <%.f,%.f,%.f> <%.f,%.f,%.f>", 
       sceneBounds->min.x, sceneBounds->min.y, sceneBounds->min.z,
       sceneBounds->max.x, sceneBounds->max.y, sceneBounds->max.z);
+  printf("\n - Number of scene nodes: %i", nodes);
 
 
   printf("\n");

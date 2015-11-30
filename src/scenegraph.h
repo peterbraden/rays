@@ -1,5 +1,14 @@
 #ifndef RAYS_SCENEGRAPH
 #define RAYS_SCENEGRAPH
+/*
+
+# SceneGraph
+- Use an octree for fast BBox intersection testing.
+- Planes etc, with infinite BBox's must be tested seperately.
+
+
+*/
+
 
 #include <stdio.h>
 #include <vector>
@@ -13,9 +22,10 @@
 typedef struct SceneGraphNode {
   int depth;
   BBox* bounds;
-  bool isLeaf;
+
   // Octree structure
   SceneGraphNode* children[8];
+  SceneGraphNode* parent; // Faster traversal
   std::vector<SceneObject*> objects;
 
   SceneGraphNode(BBox* b): bounds(b) {};
@@ -26,13 +36,14 @@ class SceneGraph {
   private:
     // All Objects
     std::vector<SceneObject*> objects; 
-
     SceneGraphNode* root;
 
     // Infinite Objects (plane etc.)
     std::vector<SceneObject*> infiniteObjects;
 
-    void partitionScene(SceneGraphNode* node , int maxDepth);
+    int partitionScene(SceneGraphNode* node , int maxDepth);
+
+    SceneGraphNode* nextLeaf(vec3 ro, vec3 rd);
 
   public:
     SceneGraph() {};

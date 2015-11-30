@@ -80,3 +80,43 @@ void vec3_print(vec3 a){
   printf("<%f, %f, %f>", a.x, a.y, a.z);
 }
 
+
+bool intersectsBBox(vec3 ro, vec3 invrd, BBox b){
+  //http://tavianator.com/fast-branchless-raybounding-box-intersections/
+
+  double tx1 = (b.min.x - ro.x)*invrd.x;
+  double tx2 = (b.max.x - ro.x)*invrd.x;
+
+  double tmin = fmin(tx1, tx2);
+  double tmax = fmax(tx1, tx2);
+
+  double ty1 = (b.min.y - ro.y)*invrd.y;
+  double ty2 = (b.max.y - ro.y)*invrd.y;
+
+  tmin = fmax(tmin, fmin(ty1, ty2));
+  tmax = fmin(tmax, fmax(ty1, ty2));
+
+  return tmax >= tmin;
+}
+vec3 vec3_invert(vec3 rd){
+  return (vec3) {1.0/rd.x, 1.0/rd.y, 1.0/rd.z}; 
+};
+
+bool intersectsBBox(BBox a, BBox b){
+  if (a.max.x < b.min.x) return false; // a is left of b
+  if (a.min.x > b.max.x) return false; // a is right of b
+  if (a.max.y < b.min.y) return false; // a is above b
+  if (a.min.y > b.max.y) return false; // a is below b
+  if (a.max.z < b.min.z) return false; // a is behind b
+  if (a.min.z > b.max.z) return false; // a is in front of b
+  return true; // boxes overlap
+};
+
+bool contains(BBox a, vec3 pt){
+  if (pt.x < a.min.x || pt.x > a.max.x) return false;
+  if (pt.y < a.min.y || pt.y > a.max.y) return false;
+  if (pt.z < a.min.z || pt.z > a.max.z) return false;
+  return true;
+}
+
+

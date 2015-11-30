@@ -44,6 +44,7 @@ Color color_scale(Color a, vec3 b);
 Color color_add(Color a, Color b);
 Color color_add(Color a, vec3 b);
 Color vec3_to_color(vec3 a);
+
 // Why the hell isnt' there a standard library for this.
 vec3 vec3_add(vec3 a, vec3 b);
 vec3 vec3_sub(vec3 a, vec3 b);
@@ -54,5 +55,10 @@ float vec3_len(vec3 const v);
 vec3 vec3_norm(vec3 in);
 vec3 vec3_mul_cross(vec3 a, vec3  b);
 void vec3_print(vec3 a);
+vec3 vec3_invert(vec3 a);
+
+bool intersectsBBox(vec3 ro, vec3 invrd, BBox b);
+bool intersectsBBox(BBox a, BBox b);
+bool contains(BBox a, vec3 pt);
 
 #endif
