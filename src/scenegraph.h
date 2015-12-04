@@ -43,7 +43,12 @@ class SceneGraph {
 
     int partitionScene(SceneGraphNode* node , int maxDepth);
 
-    SceneGraphNode* nextLeaf(vec3 ro, vec3 rd);
+    // ## Bottom up octree traversal.
+    // Given ray ro->rd find the next node along the ray. If node is null, then
+    // find first node.
+    // Assumes nodes are smallest intersecting bboxes.
+    // Returns null if there's no more intersecting BBoxes.
+    SceneGraphNode* nextLeaf(SceneGraphNode* curr, vec3 ro, vec3 rd);
 
   public:
     SceneGraph() {};
