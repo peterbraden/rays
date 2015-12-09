@@ -1,9 +1,6 @@
 #include "scene.h"
 
-Scene* initScene (){
-  int width = 360;
-  int height = 240;
-
+Scene* initScene (int width, int height){
   SceneGraph* demoObjs = new SceneGraph();
 
   Sphere *a = new Sphere((vec3) {4.,4.,0.}, 2., (Color) { 0, 255, 0});

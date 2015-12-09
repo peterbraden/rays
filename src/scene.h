@@ -19,5 +19,5 @@ typedef struct Scene {
   Scene (Camera c, SceneGraph o, std::vector<PointLight> l, float a, int d, int w, int h) : camera(c), objects(o), lights(l), ambient(a), maxDepth(d), width(w), height(h) {};
 } Scene;
 
-Scene* initScene ();
+Scene* initScene (int w, int h);
 #endif

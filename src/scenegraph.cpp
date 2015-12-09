@@ -5,7 +5,7 @@ void SceneGraph::insertObject(SceneObject* obj) {
 }
 
 
-SceneGraphNode* SceneGraph::nextLeaf(vec3 ro, vec3 rd) {
+SceneGraphNode* SceneGraph::nextLeaf(SceneGraphNode* curr, vec3 ro, vec3 rd) {
   return NULL;
 }
 

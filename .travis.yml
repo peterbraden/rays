@@ -15,7 +15,7 @@ install:
 script:
   - make install
   - make buildcpp
-  - ./build/rays.out
+  - ./build/rays.out -w 100 -h 50
   - img2txt screenshot.png
 
 

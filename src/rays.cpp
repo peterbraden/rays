@@ -1,4 +1,5 @@
 #include <time.h>
+#include <unistd.h>
 
 #include "types.h"
 #include "material.h"
@@ -27,7 +28,27 @@ void paint(RenderContext ctx, Scene scene, RenderStats* stats){
 
 
 extern "C" int main(int argc, char** argv) {
-  Scene* scene = initScene();
+  // Parse Command Line Args...
+  int width = 300;
+  int height = 200;
+  int opt = 0;
+  while ((opt = getopt(argc, argv, "w:h:")) != -1) {
+    switch (opt) {
+        case 'w':
+            width = atoi(optarg);
+            break;
+        case 'h':
+            height = atoi(optarg);
+            break;
+        default: /* '?' */
+            fprintf(stderr, "Usage: %s [-w width] [-h height] name\n",
+                    argv[0]);
+            exit(EXIT_FAILURE);
+        }
+  }
+
+  Scene* scene = initScene(width, height);
+
   scene->objects.buildIndices();
   printf("Initialised scene, %i objects", scene->objects.size());
 
