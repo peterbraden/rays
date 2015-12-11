@@ -31,7 +31,7 @@ Scene* initScene (int width, int height){
   demoLights->push_back( (PointLight) { (vec3) {0., 10., 10.}, 0.7 } );
   demoLights->push_back( (PointLight) { (vec3) {10., 10., 0.}, 0.7 } );
   Camera* defaultCamera = new Camera((vec3) {0.,1.,0}, (vec3) {10,10,20}, (vec3) {0.,4.,0.}, 0.9, width, height); // ~ pi/4
-  Scene *demoScene = new Scene(*defaultCamera, *demoObjs, *demoLights, 0.1, 2, width, height);
+  Scene *demoScene = new Scene(*defaultCamera, *demoObjs, *demoLights, 0.1, 1, width, height);
   return demoScene;
 }
 

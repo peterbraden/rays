@@ -18,7 +18,7 @@ void paint(RenderContext ctx, Scene scene, RenderStats* stats){
 
       paintPixel(j, i, scene.width, scene.height, renderAntiAliasedPixel(j, i, scene, stats),ctx);
 
-      if (i%(scene.height/10) == 0 && j == 0) {
+      if (scene.height > 10 && i%(scene.height/10) == 0 && j == 0) {
         printf("\nrender: %i/%i, traced: %zu", i, scene.height, stats->raysTraced);
         updateScreen(ctx);
       }

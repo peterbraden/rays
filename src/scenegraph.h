@@ -23,12 +23,14 @@ typedef struct SceneGraphNode {
   int depth;
   BBox* bounds;
 
+  vec3 mid;
+
   // Octree structure
   SceneGraphNode* children[8];
   SceneGraphNode* parent; // Faster traversal
   std::vector<SceneObject*> objects;
 
-  SceneGraphNode(BBox* b): bounds(b) {};
+  SceneGraphNode(BBox* b);
 } SceneGraphNode;
 
 
