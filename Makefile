@@ -2,7 +2,7 @@ EMSCRIPTEN=emcc
 BUILD=./build
 
 CC=g++
-CFLAGS=-MMD -g
+CFLAGS=-MMD -g -Wall
 #-Werror -Wall -std=c++0x
 INCLUDES=-I/usr/local/include -I./ext -I./src 
 LFLAGS=-L/usr/local/lib 
