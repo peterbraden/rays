@@ -49,5 +49,10 @@ clean:
 	rm -f ./obj/* 
 
 
+# Script shortcuts
+# lldb -- ./build/rays.out -w 50 -h 50
+# valgrind --tool=callgrind ./build/rays.out
+
+
 
 

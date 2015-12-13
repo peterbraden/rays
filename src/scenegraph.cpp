@@ -81,7 +81,6 @@ Intersection* searchLeaf (SceneGraphNode* leaf, vec3 ro, vec3 rd) {
   }
 
   if (intersects){
-    printf("!!! INTERSECTION\n");
     return new Intersection(closest); // TODO
   }
   return NULL;
@@ -143,13 +142,13 @@ Intersection* searchChild( SceneGraphNode* child,
                             unsigned int vm
                             ){
 
-  printf("\n%*s %i search child:", depth, " ", depth);
+  //printf("\n%*s %i search child:", depth, " ", depth);
   if (child == NULL){
     printf("ERROR search null child\n");
   }
 
   if (isLeaf(child)){
-    printf("<<-leaf");
+    //printf("<<-leaf");
     return searchLeaf(child, ro, rd);
   }
 
@@ -214,7 +213,7 @@ Intersection* searchChild( SceneGraphNode* child,
 
 
 Intersection* heroIntersection(SceneGraphNode* root, vec3 ro, vec3 rd){
-  printf("\n -- Hero Intersection --");
+  //printf("\n -- Hero Intersection --");
 
   unsigned int vm = vmask(rd);
   vec3 invrd = vec3_invert(rd);
@@ -227,7 +226,7 @@ Intersection* heroIntersection(SceneGraphNode* root, vec3 ro, vec3 rd){
   float szmax = (root->bounds->max.z - ro.z)*invrd.z;
   float raymin = fmin(sxmax, fmin(symax, szmax));
 
-  printf("\nTrace Ray: [%.1f,%.1f,%.1f]->[%.1f,%.1f,%.1f]", ro.x, ro.y, ro.z, rd.x, rd.y, rd.z);
+  //printf("\nTrace Ray: [%.3f,%.3f,%.3f]->[%.3f,%.3f,%.3f]", ro.x, ro.y, ro.z, rd.x, rd.y, rd.z);
 
   return searchChild(root,
               ro, 
@@ -303,12 +302,13 @@ unsigned int SceneGraph::size() {
 int SceneGraph::partitionScene(SceneGraphNode* node, int maxDepth){
   BBox bounds = *node->bounds;
 
-  printf("\n%*s -> [%.2f,%.2f,%.2f] [%.2f,%.2f,%.2f] %i objects", 
+  /*printf("\n%*s -> [%.2f,%.2f,%.2f] [%.2f,%.2f,%.2f] %i objects", 
       node->depth*4, " ",
       bounds.min.x, bounds.min.y, bounds.min.z,
       bounds.max.x, bounds.max.y, bounds.max.z,
       node->objects.size());
-  
+  */
+
   int subnodes = 1;
   // Create children;
   for (unsigned int i = 0; i < 8; i++){
