@@ -1,5 +1,20 @@
 #include "scenegraph.h"
 
+#define FMAX std::numeric_limits<float>::max()
+
+SceneGraphNode::SceneGraphNode(BBox* b) {
+  bounds = b;
+  mid = (vec3) {
+    b->min.x + (b->max.x - b->min.x)/2,
+    b->min.y + (b->max.y - b->min.y)/2,
+    b->min.z + (b->max.z - b->min.z)/2,
+  };
+
+  for (int i = 0; i<8; i++){
+    children[i] = NULL;
+  }
+}
+
 // HERO Algorithm
 
 // From a ray's rd, calculate the VMask corresponding
@@ -18,7 +33,6 @@ BBox* bboxFor(unsigned int oct, BBox bounds){
   // => 000 is aligned to z,y,x min boundaries
   // => 111 is aligned to z,y,x max
   // => 001 is aligned to z,y min, x max.
-  
   // Calc offset from min.
   int xoffs = oct & 1;
   int yoffs = oct & 2;
@@ -65,16 +79,18 @@ bool isLeaf (SceneGraphNode* n){
   return true;
 }
 
-
-Intersection* searchLeaf (SceneGraphNode* leaf, vec3 ro, vec3 rd) {
+Intersection* naiveSearch(std::vector<SceneObject*> objects, vec3 ro, vec3 rd, float max, float min){
+  // Naive exponential intersection search.
   Intersection closest;
-  closest.distance = std::numeric_limits<float>::max();
+  closest.distance = max;
   bool intersects = false;
 
-  for (int i = 0; i < leaf->objects.size(); i++){
-    Intersection intersect = leaf->objects[i]->intersects(ro, rd);
-    if (intersect.distance > 0 && 
-        intersect.distance < closest.distance){
+  for(int i = objects.size()-1; i>=0; --i) {
+    Intersection intersect = objects[i]->intersects(ro, rd);
+    if (intersect.distance > 0 &&
+        intersect.distance < closest.distance &&
+        intersect.distance < max &&
+        intersect.distance > min){
       closest = intersect;
       intersects = true;
     }
@@ -84,6 +100,10 @@ Intersection* searchLeaf (SceneGraphNode* leaf, vec3 ro, vec3 rd) {
     return new Intersection(closest); // TODO
   }
   return NULL;
+}
+
+Intersection* searchLeaf (SceneGraphNode* leaf, vec3 ro, vec3 rd) {
+  return naiveSearch(leaf->objects, ro, rd, 0, FMAX);
 }
 
 unsigned int* genmasklist(float sxmid, float symid, float szmid) {
@@ -212,8 +232,25 @@ Intersection* searchChild( SceneGraphNode* child,
 }
 
 
+SceneGraphNode* searchForContaining(SceneGraphNode* node, vec3 ro){
+  // Naive search, assumes that node _does_ contain ro
+  for (int i = 0; i< 8; i++){
+    if (node->children[i] != NULL &&
+        contains(*node->children[i]->bounds, ro)){
+      return searchForContaining(node->children[i], ro);
+    }
+  }
+  return node;
+}
+
 Intersection* heroIntersection(SceneGraphNode* root, vec3 ro, vec3 rd){
   //printf("\n -- Hero Intersection --");
+
+  // Search the Tree
+  // 1. Is ro inside node->bounds?
+  if (contains(*root->bounds, ro)) {
+    root = searchForContaining(root, ro);
+  }
 
   unsigned int vm = vmask(rd);
   vec3 invrd = vec3_invert(rd);
@@ -244,30 +281,15 @@ void SceneGraph::insertObject(SceneObject* obj) {
   objects.push_back(obj);
 }
 
-SceneGraphNode* searchForContaining(SceneGraphNode* node, vec3 ro){
-  // Naive search, assumes that node _does_ contain ro
-  for (int i = 0; i< 8; i++){
-    if (node->children[i] != NULL &&
-        contains(*node->children[i]->bounds, ro)){
-      return searchForContaining(node->children[i], ro);
-    }
-  }
-  return node;
-}
+
 
 Intersection SceneGraph::nearestIntersection(vec3 ro, vec3 rd, float max, float min){
   Intersection closest;
   closest.distance = max;
   bool intersects = false;
 
-  // Search the Tree
-  // 1. Is ro inside node->bounds?
-  SceneGraphNode* node = root;
-  if (contains(*node->bounds, ro)) {
-    node = searchForContaining(root, ro);
-  }
 
-  Intersection* hero = heroIntersection(node, ro, rd);
+  Intersection* hero = heroIntersection(root, ro, rd);
   if (hero != NULL){
     closest = *hero;
     intersects = true;
@@ -342,18 +364,6 @@ int SceneGraph::partitionScene(SceneGraphNode* node, int maxDepth){
 }
 
 
-SceneGraphNode::SceneGraphNode(BBox* b) {
-  bounds = b;
-  mid = (vec3) {
-    b->min.x + (b->max.x - b->min.x)/2,
-    b->min.y + (b->max.y - b->min.y)/2,
-    b->min.z + (b->max.z - b->min.z)/2,
-  };
-
-  for (int i = 0; i<8; i++){
-    children[i] = NULL;
-  }
-}
 
 void SceneGraph::buildIndices(){
   printf("\nbuilding Scene Graph");
