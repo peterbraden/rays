@@ -288,23 +288,23 @@ Intersection SceneGraph::nearestIntersection(vec3 ro, vec3 rd, float max, float 
   closest.distance = max;
   bool intersects = false;
 
-
-  Intersection* hero = heroIntersection(root, ro, rd);
-  if (hero != NULL){
-    closest = *hero;
+#ifdef NAIVE_SEARCH
+  Intersection* objs = naiveSearch(objects, ro, rd, max, min);
+#else
+  Intersection* objs = heroIntersection(root, ro, rd);
+#endif
+  if (objs != NULL){
+    closest = *objs;
     intersects = true;
+    max = closest.distance;
   }
 
   // Fall back to full intersection test for infinite objects.
-  for(int i = infiniteObjects.size()-1; i>=0; --i) {
-    Intersection intersect = infiniteObjects[i]->intersects(ro, rd);
-    if (intersect.distance > 0 && 
-        intersect.distance < closest.distance &&
-        intersect.distance < max &&
-        intersect.distance > min){
-      closest = intersect;
-      intersects = true;
-    }
+  Intersection* infinite = naiveSearch(infiniteObjects, ro, rd, max, min);
+  if (infinite != NULL){
+    closest = *infinite;
+    intersects = true;
+    max = closest.distance;
   }
 
   if (intersects == false){

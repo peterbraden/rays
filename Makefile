@@ -2,8 +2,9 @@ EMSCRIPTEN=emcc
 BUILD=./build
 
 CC=g++
-CFLAGS=-MMD -g -Wall
+#-DNAIVE_SEARCH
 #-Werror -Wall -std=c++0x
+CFLAGS=-MMD -g -Wall 
 INCLUDES=-I/usr/local/include -I./ext -I./src 
 LFLAGS=-L/usr/local/lib 
 PKG_CONFIG_SDL=`sdl2-config --cflags --libs`
