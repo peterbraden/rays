@@ -2,7 +2,7 @@ EMSCRIPTEN=emcc
 BUILD=./build
 
 CC=g++
-CFLAGS=-MMD
+CFLAGS=-MMD -g
 #-Werror -Wall -std=c++0x
 INCLUDES=-I/usr/local/include -I./ext -I./src 
 LFLAGS=-L/usr/local/lib 
@@ -18,7 +18,7 @@ OBJS=$(addprefix obj/, $(notdir $(SRCS:.cpp=.cpp.o)))
 
 devcpp: buildcpp
 	# Build successfully
-	$(BUILD)/rays.out -w 100 -h 50
+	$(BUILD)/rays.out -w 5 -h 5
 .PHONY: devcpp
 .DEFAULT: devcpp
 

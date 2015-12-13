@@ -58,7 +58,7 @@ unsigned int maskdiff(vec3 l, float m){
 }
 
 bool isLeaf (SceneGraphNode* n){
-  for (unsigned int i = 0; i<8;i++){
+  for (int i = 0; i<8;i++){
     if (n->children[i] != NULL)
       return false;
   }
@@ -105,8 +105,31 @@ unsigned int* genmasklist(float sxmid, float symid, float szmid) {
     masklist[1] = ( symid > szmid ) ? 4 : 2;
     masklist[2] = ( symid > szmid ) ? 2 : 4;
   }
-  printf("msk: %i,%i,%i \n", masklist[0], masklist[1], masklist[2]);
+  //printf("msk: %i,%i,%i \n", masklist[0], masklist[1], masklist[2]);
   return masklist;
+}
+
+unsigned int genraymin(int i, vec3 smid, unsigned int* masklist, unsigned int prevmin, unsigned int prevmax){
+  if (i == -1){
+    // Called for genraymax( i = 0)
+    return prevmax;
+  }
+  if (i == 4){
+    return prevmin;
+  }
+
+  switch (masklist[i]) {
+    case 1:
+      return smid.x;
+    case 2:
+      return smid.y;
+    case 4:
+      return smid.z;
+
+    default:
+      printf("!!!!!>>> ERROR RAYMIN: %i %i\n\n", i, masklist[i]);
+      return 0;
+  }
 }
 
 // HERO search hot loop.
@@ -120,7 +143,7 @@ Intersection* searchChild( SceneGraphNode* child,
                             unsigned int vm
                             ){
 
-  printf("\n%*s %i search child:\n", depth, " ", depth);
+  printf("\n%*s %i search child:", depth, " ", depth);
   if (child == NULL){
     printf("ERROR search null child\n");
   }
@@ -139,17 +162,18 @@ Intersection* searchChild( SceneGraphNode* child,
   unsigned int lastmask = maskdiff(smid, raymin);
   unsigned int* masklist = genmasklist(sxmid, symid, szmid);
 
-  printf("\n childmask %i, lastmask %i", childmask, lastmask);
-  printf("\n smid: %.1f, %.1f, %.1f", sxmid, symid, szmid);
-  printf("\n masklist: %i %i %i", masklist[0], masklist[1], masklist[2]);
+  //printf("\n childmask %i, lastmask %i", childmask, lastmask);
+  //printf("\n smid: %.1f, %.1f, %.1f", sxmid, symid, szmid);
+  //printf("\n masklist: %i %i %i", masklist[0], masklist[1], masklist[2]);
 
   unsigned int i = 0;
   while (i < 4) {
-    printf("\n %i : c: %i, mi: %i, m c^v %i \n", i, childmask, masklist[i], childmask ^ vm);
-
-    unsigned int childraymax = 0;  // TODO
-    unsigned int childraymin = 0; // TODO
+    //printf("\n %i : c: %i, mi: %i, m c^v %i \n", i, childmask, masklist[i], childmask ^ vm);
+  
     unsigned int oldmask;
+
+    unsigned int childraymax = genraymin(i - 1, smid, masklist, raymin, raymax);
+    unsigned int childraymin = genraymin(i, smid, masklist, raymin, raymax); 
 
     if (child->children[childmask ^ vm] != NULL){
       Intersection* c = searchChild(
@@ -165,22 +189,23 @@ Intersection* searchChild( SceneGraphNode* child,
         return c;
       }
     }
-    printf("\n children were searched.. no match\n");
+    //printf("\n children were searched.. no match\n");
 
     if (childmask == lastmask) {
-       printf("hit last match. Exit\n");
+       //printf("hit last match. Exit\n");
        return NULL;
     } else {
       oldmask = masklist[i] & childmask;
-      while ((masklist[++i] & childmask) != oldmask) {
+      while ((masklist[i+1] & childmask) != oldmask) {
+        i++;
         // continue while mask is same value.
         // ++i each iteration.
         if (i >= 3)
           return NULL; // Break out of outer while loop
       }
       childmask = childmask | masklist[i];
-      printf("childmask %i --> %i (%i)\n", oldmask, childmask, i);
-      printf("!! %i\n", masklist[i]);
+      //printf("childmask %i --> %i (%i)\n", oldmask, childmask, i);
+      //printf("!! %i\n", masklist[i]);
     }
   }
   printf("Reached end of searchChild");
@@ -206,7 +231,7 @@ Intersection* heroIntersection(SceneGraphNode* root, vec3 ro, vec3 rd){
   float szmax = (root->bounds->max.z - ro.z)*invrd.z;
   float raymin = fmin(sxmax, fmin(symax, szmax));
 
-  printf("\nTrace Ray: [%.1f,%.1f,%.1f]->[%.1f,%.1f,%.1f]\n", ro.x, ro.y, ro.z, rd.x, rd.y, rd.z);
+  printf("\nTrace Ray: [%.1f,%.1f,%.1f]->[%.1f,%.1f,%.1f]", ro.x, ro.y, ro.z, rd.x, rd.y, rd.z);
 
   return searchChild(root,
               ro, 
@@ -298,7 +323,6 @@ int SceneGraph::partitionScene(SceneGraphNode* node, int maxDepth){
     BBox* b = bboxFor(i, bounds);
      
     SceneGraphNode* n = new SceneGraphNode(b);
-    n->parent = node;
     n->depth = node->depth + 1;
 
     // Which objects are in this new BBox?
@@ -331,6 +355,10 @@ SceneGraphNode::SceneGraphNode(BBox* b) {
     b->min.y + (b->max.y - b->min.y)/2,
     b->min.z + (b->max.z - b->min.z)/2,
   };
+
+  for (int i = 0; i<8; i++){
+    children[i] = NULL;
+  }
 }
 
 void SceneGraph::buildIndices(){

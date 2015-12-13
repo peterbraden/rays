@@ -27,7 +27,6 @@ typedef struct SceneGraphNode {
 
   // Octree structure
   SceneGraphNode* children[8];
-  SceneGraphNode* parent; // Faster traversal
   std::vector<SceneObject*> objects;
 
   SceneGraphNode(BBox* b);
