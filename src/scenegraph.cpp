@@ -335,13 +335,11 @@ int SceneGraph::partitionScene(SceneGraphNode* node, int maxDepth){
   // Create children;
   for (unsigned int i = 0; i < 8; i++){
     BBox* b = bboxFor(i, bounds);
-     
     SceneGraphNode* n = new SceneGraphNode(b);
     n->depth = node->depth + 1;
 
     // Which objects are in this new BBox?
     for (int j = 0; j< node->objects.size(); j++) {
-    
       if (intersectsBBox(*b, *node->objects[j]->getBounds())){
         // TODO CACHE
         n->objects.push_back(node->objects[j]);
@@ -350,7 +348,7 @@ int SceneGraph::partitionScene(SceneGraphNode* node, int maxDepth){
 
     if (n->depth >= maxDepth) continue;
     if (n->objects.size() == 0) continue; // Empty leaf node;
-    
+ 
     node->children[i] = n;
 
     if (n->objects.size() > 1){
