@@ -55,5 +55,15 @@ clean:
 # valgrind --tool=callgrind ./build/rays.out
 
 
+test: buildcpp
+	$(CC) -isystem ext/googletest/googletest/include -Iext/googletest/googletest \
+		    -pthread -c ext/googletest/googletest/src/gtest-all.cc
+	ar -rv libgtest.a gtest-all.o
+	$(CC) $(LFLAGS) -isystem ext/googletest/googletest/include $(INCLUDES) ./obj/types.cpp.o $(C_OBJS) -pthread $(LIBS)\
+				test/suite.cpp libgtest.a -o $(BUILD)/test.o
+	./build/test.o
+
+.PHONY: test
+
 
 
