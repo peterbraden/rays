@@ -20,4 +20,6 @@ typedef struct Scene {
 } Scene;
 
 Scene* initScene (int w, int h);
+
+
 #endif

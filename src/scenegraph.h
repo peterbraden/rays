@@ -55,5 +55,20 @@ class SceneGraph {
     // Number of objects in scene. Informational.
     unsigned int size(); 
     
+#ifdef RAYS_TEST
+    SceneGraphNode* getRoot();
+#endif
 };
+
+
+#ifdef RAYS_TEST
+// The following are exposed for unit testing, but don't make sense to use in isolation
+unsigned int vmask(vec3 rd);
+Intersection* naiveSearch(std::vector<SceneObject*> objects, vec3 ro, vec3 rd, float max, float min);
+SceneGraphNode* searchForContaining(SceneGraphNode* node, vec3 ro);
+Intersection* heroIntersection(SceneGraphNode* root, vec3 ro, vec3 rd);
+BBox* bboxFor(unsigned int oct, BBox bounds);
+Intersection* searchLeaf (SceneGraphNode* leaf, vec3 ro, vec3 rd);
+#endif
+
 #endif

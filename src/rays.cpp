@@ -27,6 +27,7 @@ void paint(RenderContext ctx, Scene scene, RenderStats* stats){
 }
 
 
+#ifndef RAYS_TEST
 extern "C" int main(int argc, char** argv) {
   // Parse Command Line Args...
   int width = 300;
@@ -80,5 +81,4 @@ extern "C" int main(int argc, char** argv) {
 
   return 0;
 }
-
-
+#endif

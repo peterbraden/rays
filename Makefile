@@ -55,11 +55,12 @@ clean:
 # valgrind --tool=callgrind ./build/rays.out
 
 
-test: buildcpp
+test: CFLAGS += -DRAYS_TEST
+test:  $(OBJS) $(C_OBJS)
 	$(CC) -isystem ext/googletest/googletest/include -Iext/googletest/googletest \
 		    -pthread -c ext/googletest/googletest/src/gtest-all.cc
 	ar -rv libgtest.a gtest-all.o
-	$(CC) $(LFLAGS) -isystem ext/googletest/googletest/include $(INCLUDES) ./obj/types.cpp.o $(C_OBJS) -pthread $(LIBS)\
+	$(CC) $(LFLAGS) $(CFLAGS) -isystem ext/googletest/googletest/include $(INCLUDES) $(OBJS) $(C_OBJS) -pthread $(LIBS)\
 				test/suite.cpp libgtest.a -o $(BUILD)/test.o
 	./build/test.o
 

@@ -362,6 +362,9 @@ int SceneGraph::partitionScene(SceneGraphNode* node, int maxDepth){
 }
 
 
+SceneGraphNode* SceneGraph::getRoot(){
+  return root;
+}
 
 void SceneGraph::buildIndices(){
   printf("\nbuilding Scene Graph");
