@@ -403,6 +403,18 @@ void SceneGraph::buildIndices(){
     if (b->max.z > sceneBounds->max.z) {
       sceneBounds->max.z = b->max.z;
     }
+    if ((2 * (b->max.x - b->min.x)) > sceneBounds->max.x - sceneBounds->min.x) {
+      // Not big enough. Double size.
+      sceneBounds->max.x += (sceneBounds->max.x - sceneBounds->min.x);
+    }
+    if ((2 * (b->max.y - b->min.y)) > sceneBounds->max.y - sceneBounds->min.y) {
+      // Not big enough. Double size.
+      sceneBounds->max.y +=  (sceneBounds->max.y - sceneBounds->min.y);
+    }
+    if ((2 * (b->max.z - b->min.z)) > sceneBounds->max.z - sceneBounds->min.z) {
+      // Not big enough. Double size.
+      sceneBounds->max.z +=  (sceneBounds->max.z - sceneBounds->min.z);
+    }
 
     root->objects.push_back(objects[i]);
   }
