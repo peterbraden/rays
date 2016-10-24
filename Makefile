@@ -19,7 +19,7 @@ OBJS=$(addprefix obj/, $(notdir $(SRCS:.cpp=.cpp.o)))
 
 devcpp: buildcpp
 	# Build successfully
-	$(BUILD)/rays.out -w 5 -h 5
+	$(BUILD)/rays.out -w 50 -h 50
 .PHONY: devcpp
 .DEFAULT: devcpp
 

@@ -55,9 +55,7 @@ class SceneGraph {
     // Number of objects in scene. Informational.
     unsigned int size(); 
     
-#ifdef RAYS_TEST
     SceneGraphNode* getRoot();
-#endif
 };
 
 

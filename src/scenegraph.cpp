@@ -361,7 +361,6 @@ int SceneGraph::partitionScene(SceneGraphNode* node, int maxDepth){
   return subnodes;
 }
 
-
 SceneGraphNode* SceneGraph::getRoot(){
   return root;
 }
